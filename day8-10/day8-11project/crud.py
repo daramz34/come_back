@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-import models
-import schemas
+import NOTEBOOK_project.models as models
+import NOTEBOOK_project.schemas as schemas
 
 def get_responses(db:Session):
     return db.query(models.Student).all()

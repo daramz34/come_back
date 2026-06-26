@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Text, Numeric, DateTime
-from database import Base
+from NOTEBOOK_project.database import Base
 
 class Item(Base):
     __tablename__ = "items"

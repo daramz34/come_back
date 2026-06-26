@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-import models
-import schemas
+import NOTEBOOK_project.models as models
+import NOTEBOOK_project.schemas as schemas
 
 # READ ALL ITEMS
 def get_all_items(db: Session):

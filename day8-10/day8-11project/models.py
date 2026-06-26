@@ -1,6 +1,6 @@
 from sqlalchemy import String, Column, Float, Integer, Numeric, Boolean, DateTime
 from datetime import datetime
-from database import Base
+from NOTEBOOK_project.database import Base
 
 
 class Student(Base):
