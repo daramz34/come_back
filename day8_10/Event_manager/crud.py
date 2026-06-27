@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from schemas import EventCreate, EventResponse, EventUpdate
-from models import Event
+from day8_10.Event_manager.schemas import EventCreate, EventResponse, EventUpdate
+from day8_10.Event_manager.models import Event
 
 
 def create_event(db: Session, event: EventCreate):
