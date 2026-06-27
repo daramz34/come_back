@@ -1,6 +1,6 @@
-from NOTEBOOK_project.models import NOTES
-from NOTEBOOK_project.database import SessionLocal
-from NOTEBOOK_project.schemas import NoteResponse, NoteCreate, NoteUpdate
+from models import NOTES
+from database import SessionLocal
+from schemas import NoteResponse, NoteCreate, NoteUpdate
 from sqlalchemy.orm import Session
 from datetime import datetime
 
@@ -16,6 +16,11 @@ def create_note(db: Session, note: NoteCreate):
 
 def get_notes(db: Session):
     return db.query(NOTES).all()
+
+def get_notes_by_pagination(db:Session, skip: int = 0, limit: int = 8):
+    query = db.query(NOTES)
+    
+    return query.offset(skip).limit(limit).all()
 
 
 def update_notes(db: Session, note_id: int, note: NoteUpdate):

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-
+from typing import List
 
 class ItemCreate(BaseModel):
     name: str
@@ -20,5 +20,12 @@ class ItemResponse(BaseModel):
         from_attributes = True
 
 
+class PaginationItemResponse(BaseModel):
+    total: int
+    page: int
+    limit: int
+    results: list[ItemResponse]
 
+
+    
 

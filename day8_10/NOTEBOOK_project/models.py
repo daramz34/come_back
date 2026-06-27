@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Integer, Float, Text, DateTime
-from NOTEBOOK_project.database import Base
+from database import Base
 from datetime import datetime
 
 

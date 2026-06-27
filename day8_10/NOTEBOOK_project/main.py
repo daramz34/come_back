@@ -1,10 +1,11 @@
 from fastapi import FastAPI, Depends, status, HTTPException, Request
-from NOTEBOOK_project.database import get_db, Base, engine
+from database import get_db, Base, engine
 from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
-from NOTEBOOK_project.crud import delete_notes, create_note, update_notes, get_notes
-from NOTEBOOK_project.schemas import NoteCreate, NoteResponse, NoteUpdate
+from crud import delete_notes, create_note, update_notes, get_notes, get_notes_by_pagination
+from schemas import NoteCreate, NoteResponse, NoteUpdate
+
 
 
 app = FastAPI()
@@ -49,6 +50,11 @@ def create_notes_route(note: NoteCreate, db: Session = Depends(get_db)):
 def get_notes_route(db: Session = Depends(get_db)):
     note = get_notes(db)
     return note
+
+
+@app.get("/paganated_notes/", response_model=list[NoteResponse])
+def get_pagenated_note(skip: int = 0, limit: int = 8, db:Session = Depends(get_db)):
+    return get_notes_by_pagination(db=db, skip=skip, limit=limit)
 
 @app.put("/notes/{note_id}", response_model=NoteResponse)
 def update_notes_routes(note_id:int, note: NoteUpdate, db:Session= Depends(get_db)):

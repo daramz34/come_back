@@ -27,3 +27,17 @@ def delete_item(db:Session, id:int )-> bool:
     return True    
 
 
+def get_paginated_items(db:Session, skip: int=0, limit: int=5, min_price:float = None,max_price: float = None):
+    query = db.query(Item)
+    
+    if min_price is not None:
+        query = query.filter(Item.price >= min_price)
+    
+    if max_price is not None:
+        query = query.filter(Item.price <= max_price)
+    
+    total_count = query.count()
+
+    data = query.offset(skip).limit(limit).all()
+
+    return data, total_count

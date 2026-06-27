@@ -1,11 +1,11 @@
-from fastapi import FastAPI, Depends, status, HTTPException, Request
+from fastapi import FastAPI, Depends, status, HTTPException, Request, Query
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from sqlalchemy.orm import Session
 
 from database import Base, engine, get_db
-from crud import create_item, get_item, delete_item
-from schemas import ItemCreate, ItemResponse
+from crud import create_item, get_item, delete_item,get_paginated_items
+from schemas import ItemCreate, ItemResponse, PaginationItemResponse
 app = FastAPI()
 Base.metadata.create_all(bind=engine)
 # -------------------------------------------------------------------------
@@ -65,17 +65,37 @@ async def global_generic_exception_handler(request: Request, exc: Exception):
 
 
 
-
+@app.get("/")
+def home():
+    return{"msg": "Welcome"}
 
 @app.post("/items/", response_model=ItemResponse)
 def api_create_items(item: ItemCreate, db: Session = Depends(get_db)):
     return create_item(db, item)
 
-@app.get("/items/", response_model=list[ItemResponse])
+@app.get("/items1/", response_model=list[ItemResponse])
 def api_get_items(db: Session = Depends(get_db)):
     items = get_item(db)
     return items
 
+@app.get("/items/", response_model=PaginationItemResponse)
+def read_items(
+    page: int = Query(1, ge=1), 
+    limit: int = Query(5, ge=1, le=100),
+    min_price: float= Query(None),
+    max_price: float = Query(None),
+    db: Session = Depends(get_db)
+):
+    skip = (page - 1) * limit
+    items, total_count = get_paginated_items(
+        db, skip=skip, limit=limit, min_price=min_price, max_price=max_price
+    )
+    return {
+        "total" : total_count,
+        "page" : page,
+        "limit": limit,
+        "results": items
+    }
 @app.delete("/items/{item_id}",
             status_code=status.HTTP_204_NO_CONTENT)
 def delete_item_route(item_id: int, db: Session = Depends(get_db)):
