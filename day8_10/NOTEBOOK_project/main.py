@@ -8,7 +8,14 @@ from schemas import NoteCreate, NoteResponse, NoteUpdate
 
 
 
-app = FastAPI()
+app = FastAPI(
+    title="NOTEBOOK PROJECT",
+    description="AN API for NOTEBOOKS",
+    verison="4.0.2",
+    contact={
+        "name":"daramz"
+    }
+)
 Base.metadata.create_all(bind=engine)
 
 
@@ -52,7 +59,8 @@ def get_notes_route(db: Session = Depends(get_db)):
     return note
 
 
-@app.get("/paganated_notes/", response_model=list[NoteResponse])
+@app.get("/paganated_notes/", response_model=list[NoteResponse],
+         summary="FETCH particular set of books")
 def get_pagenated_note(skip: int = 0, limit: int = 8, db:Session = Depends(get_db)):
     return get_notes_by_pagination(db=db, skip=skip, limit=limit)
 
@@ -67,7 +75,8 @@ def update_notes_routes(note_id:int, note: NoteUpdate, db:Session= Depends(get_d
     return update_note
 
 
-@app.delete("/notes/{note_id}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/notes/{note_id}", status_code=status.HTTP_204_NO_CONTENT,
+            summary="Permantely delete a book")
 def delete_note_route(note_id:int, db:Session = Depends(get_db)):
     results = delete_notes(db, note_id)
    
