@@ -69,7 +69,7 @@ async def global_generic_exception_handler(request: Request, exc: Exception):
 def home():
     return{"msg": "Welcome"}
 
-@app.post("/items/", response_model=ItemResponse)
+@app.post("/items/", response_model=ItemResponse, status_code=status.HTTP_201_CREATED)
 def api_create_items(item: ItemCreate, db: Session = Depends(get_db)):
     return create_item(db, item)
 

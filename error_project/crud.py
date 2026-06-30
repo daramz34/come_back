@@ -2,10 +2,11 @@ from database import SessionLocal
 from models import Item
 from schemas import ItemCreate, ItemResponse
 from sqlalchemy.orm import Session
-
+from security import hash_password
 
 def create_item(db: Session, item_in: ItemCreate):
-    db_item = Item(**item_in.model_dump())
+    secured_password = hash_password(item_in.password)
+    db_item = Item(**item_in.model_dump(exclude={"password"}), hashed_password=secured_password)
     db.add(db_item)
     db.commit()
     db.refresh(db_item)

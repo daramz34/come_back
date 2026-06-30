@@ -9,6 +9,8 @@ class Item(Base):
     name = Column(String, nullable=False)
     price = Column(Float, default=0.00)
     description = Column(String)
+    hashed_password = Column(String, nullable=False)
+    email= Column(String, nullable= False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
 
