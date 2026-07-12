@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime, Text
 from datetime import datetime
-from database import Base
+from auth_project.database import Base
 
 
 class Item(Base):

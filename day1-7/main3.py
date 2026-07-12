@@ -1,6 +1,6 @@
 from fastapi import FastAPI, status, Depends
 from sqlalchemy.orm import Session
-from database import SessionLocal, Item
+from auth_project.database import SessionLocal, Item
 
 
 app = FastAPI()

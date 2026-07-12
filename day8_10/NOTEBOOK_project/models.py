@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Integer, Float, Text, DateTime
-from database import Base
+from auth_project.database import Base
 from datetime import datetime
 
 

@@ -1,10 +1,10 @@
 from fastapi import FastAPI, Depends, status, HTTPException, Request
-from database import get_db, Base, engine
+from auth_project.database import get_db, Base, engine
 from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
-from crud import delete_notes, create_note, update_notes, get_notes, get_notes_by_pagination
-from schemas import NoteCreate, NoteResponse, NoteUpdate
+from auth_project.crud import delete_notes, create_note, update_notes, get_notes, get_notes_by_pagination
+from auth_project.schemas import NoteCreate, NoteResponse, NoteUpdate
 
 
 

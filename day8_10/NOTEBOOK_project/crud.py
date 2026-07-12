@@ -1,6 +1,6 @@
 from models import NOTES
-from database import SessionLocal
-from schemas import NoteResponse, NoteCreate, NoteUpdate
+from auth_project.database import SessionLocal
+from auth_project.schemas import NoteResponse, NoteCreate, NoteUpdate
 from sqlalchemy.orm import Session
 from datetime import datetime
 

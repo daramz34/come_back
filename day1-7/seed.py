@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from database import SessionLocal, Base, engine, Item, init_db
+from auth_project.database import SessionLocal, Base, engine, Item, init_db
 
 
 def seed_db():

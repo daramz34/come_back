@@ -1,6 +1,6 @@
-from database import SessionLocal
+from auth_project.database import SessionLocal
 from models import Item
-from schemas import ItemCreate, ItemResponse
+from auth_project.schemas import ItemCreate, ItemResponse
 from sqlalchemy.orm import Session
 from security import hash_password
 
@@ -42,3 +42,6 @@ def get_paginated_items(db:Session, skip: int=0, limit: int=5, min_price:float =
     data = query.offset(skip).limit(limit).all()
 
     return data, total_count
+
+def get_user_by_email(db:Session,email:str):
+    return db.query(Item).filter(Item.email==email).first()

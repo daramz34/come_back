@@ -2,17 +2,25 @@ from fastapi import FastAPI, Depends, status, HTTPException, Request, Query
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from sqlalchemy.orm import Session
+import jwt
+from security import SECRET_KEY, ALGORITHM
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from auth_project.database import Base, engine, get_db
+from auth_project.crud import create_item, get_item, delete_item,get_paginated_items, get_user_by_email
+from security import verify_password, hash_password, create_access_token
+from auth_project.schemas import ItemCreate, ItemResponse, PaginationItemResponse, Token
 
-from database import Base, engine, get_db
-from crud import create_item, get_item, delete_item,get_paginated_items
-from schemas import ItemCreate, ItemResponse, PaginationItemResponse
+
+
+
 app = FastAPI()
+security_scheme = HTTPBearer()
 Base.metadata.create_all(bind=engine)
-# -------------------------------------------------------------------------
-# 🛠️ DAY 12: GLOBAL EXCEPTION HANDLERS (The Error Standardization Layer)
-# -------------------------------------------------------------------------
 
-# 1. Catch Standard HTTPExceptions (like our manual 404s)
+
+
+
+
 @app.exception_handler(HTTPException)
 async def custom_http_exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(
@@ -68,6 +76,40 @@ async def global_generic_exception_handler(request: Request, exc: Exception):
 @app.get("/")
 def home():
     return{"msg": "Welcome"}
+
+
+@app.post("/login/", response_model=Token)
+def Login(item_in: ItemCreate, db:Session = Depends(get_db)):
+    item = get_user_by_email(db, email=item_in.email)
+
+    if not item or not verify_password(item_in.password, item.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password"
+        )
+    token = create_access_token(data={"sub": item.email, "item_id": item.id})
+    return{
+        "access_token":token,
+        "token_type": "bearer"
+    }
+
+def get_current_user(token: HTTPAuthorizationCredentials = Depends(security_scheme)):
+    try:
+        payload = jwt.decode(token.credentials, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except jwt.PyJWTError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials/Token invalid or expired"
+        )
+
+
+@app.get("/items/secret-data")
+def read_protected_data(current_user: dict = Depends(get_current_user)):
+    return {
+        "message": "Welcome to the hidden warehouse!",
+        "authorized_user": current_user["sub"]
+    }
 
 @app.post("/items/", response_model=ItemResponse, status_code=status.HTTP_201_CREATED)
 def api_create_items(item: ItemCreate, db: Session = Depends(get_db)):
