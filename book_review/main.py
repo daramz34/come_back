@@ -1,16 +1,16 @@
 from fastapi import FastAPI, Depends, status, HTTPException
-from crud import  create_user,create_book,get_all_books,get_all_review_for_book,add_review_to_book,delete_book, authenticate_user
-from database import get_db, Base, engine
+from book_review.crud import  create_user,create_book,get_all_books,get_all_review_for_book,add_review_to_book,delete_book, authenticate_user
+from book_review.database import get_db, Base, engine
 import jwt
 import os
-from model import User, Book, Review
+from book_review.model import User, Book, Review
 from sqlalchemy.orm import Session
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from fastapi.security import OAuth2PasswordBearer
 from datetime import datetime, timedelta
-from schemas import BookCreate, BookResponse, ReviewCreate,ReviewResponse,LoginRequest,UserCreate,UserResponse,TokenResponse
+from book_review.schemas import BookCreate, BookResponse, ReviewCreate,ReviewResponse,LoginRequest,UserCreate,UserResponse,TokenResponse
 
 app = FastAPI(
     title="Book Review",

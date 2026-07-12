@@ -1,4 +1,4 @@
-from database import Base
+from book_review.database import Base
 from sqlalchemy import Column, String, Integer, ForeignKey, DateTime, Float,  Text
 from datetime import datetime
 from sqlalchemy.orm import relationship

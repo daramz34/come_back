@@ -1,5 +1,5 @@
-from schemas import BookCreate,UserCreate, ReviewCreate
-from model import User, Book, Review
+from book_review.schemas import BookCreate,UserCreate, ReviewCreate
+from book_review.model import User, Book, Review
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
