@@ -28,7 +28,10 @@ class AppointmentCreate(BaseModel):
     title: str
     description: Optional[str] = None
     date: datetime
+    student_id: int
     doctor_id : int
+
+
 class AppointmentUpdate(BaseModel):
     title: str
     description: Optional[str] = None

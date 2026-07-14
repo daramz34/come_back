@@ -1,6 +1,5 @@
 from Campus_clinic_api.schemas import AppointmentCreate,AppointmentResponse,AppointmentUpdate,UserCreate,UserResponse,TokenResponse
 from sqlalchemy.orm import Session
-from Campus_clinic_api.database import get_db
 from Campus_clinic_api.models import User, Appointment
 from passlib.context import CryptContext
 from typing import Literal
@@ -62,3 +61,35 @@ def get_all_appointments(db: Session, page: int=1, limit: int=10, status: Litera
 
     }
 
+
+
+def get_appointments_by_id(db: Session, id: int):
+    db_user = db.query(Appointment).filter(Appointment.id == id).first()
+    return db_user
+
+def update_appointment_by_id(db: Session, id:int, update=AppointmentUpdate):
+    db_appointment = db.query(Appointment).filter(Appointment.id == id).first()
+
+    if not db_appointment:
+        return None
+    
+    db_update = update.model_dump()
+    for key, value in db_update.items():
+        setattr(db_appointment, key, value)
+    db.commit()
+    db.refresh(db_update)
+   
+    return db_update
+
+
+
+def delete_appointment_by_id(db:Session, id: int):
+    db_appointment = db.query(Appointment).filter(Appointment.id == id).first()
+    if not db_appointment:
+        return None
+    
+    db.delete(db_appointment)
+    db.commit()
+    return{
+        "Msg": "deletd successfully"
+    }

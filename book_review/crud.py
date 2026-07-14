@@ -26,6 +26,7 @@ def create_book(db:Session, book: BookCreate):
     db.commit()
     db.refresh(db_book)
     return db_book
+
 def get_all_books(db:Session):
     return db.query(Book).all()
 

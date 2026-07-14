@@ -22,8 +22,8 @@ class Appointment(Base):
     description = Column(String)
     date = Column(DateTime, nullable=False)
     status = Column(String, default="pending")
-    student_id = Column(Integer, ForeignKey="users.id", nullable=False)
-    doctor_id = Column(Integer, ForeignKey="user.id", nullable=False)
+    student_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    doctor_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime, default= datetime.utcnow)
 
 
