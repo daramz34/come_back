@@ -28,15 +28,14 @@ class AppointmentCreate(BaseModel):
     title: str
     description: Optional[str] = None
     date: datetime
-    student_id: int
     doctor_id : int
-
-
+    
 class AppointmentUpdate(BaseModel):
-    title: str
+    title: Optional[str] = None
     description: Optional[str] = None
-    date: datetime
-    status: Literal["pending", "confirmed", "cancelled"]
+    date: Optional[datetime] = None
+    status: Optional[Literal["pending", "confirmed", "cancelled"]] = None
+
 class AppointmentResponse(BaseModel):
     id: int
     title: str

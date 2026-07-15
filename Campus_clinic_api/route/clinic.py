@@ -10,7 +10,7 @@ from Campus_clinic_api.schemas import (
     )
 from Campus_clinic_api.database import get_db, Base, engine
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.security import OAuth2PasswordBearer
+from Campus_clinic_api.models import User
 from sqlalchemy.orm import Session
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
@@ -53,10 +53,12 @@ def verify_access_token(token:str):
             detail="Invalid token"
         )
     
-
-def get_current_user(token: str = Depends(oauth2_scheme)):
-    return verify_access_token(token)
-    
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    payload = verify_access_token(token)
+    user = db.query(User).filter(User.id == int(payload.get("sub"))).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+    return user
 
 
 @router.post("/login", response_model=TokenResponse, description="Logins in user")
@@ -81,13 +83,12 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
 
 
-@router.post("/appointments", response_model=AppointmentResponse, description="Book an appointment")
-def create_an_appointment(appointment: AppointmentCreate, db: Session= Depends(get_db),  current_user : dict= Depends(get_current_user)):
-    db_appointment = create_appointment(db, appointment)
-    return db_appointment
+@router.post("/appointments", response_model=AppointmentResponse, status_code=status.HTTP_200_OK, description="Book an appointment")
+def create_an_appointment(appointment: AppointmentCreate, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
+    return create_appointment(db, appointment, current_user)
 
 
-@router.get("/appointments", response_model=list[PaginatedResponse], description="Get all appointment")
+@router.get("/appointments", response_model=PaginatedResponse, status_code=status.HTTP_200_OK,description="Get all appointment")
 def get_all_appointment_paginated(
     page: int = Query(1, ge=1),
     limit: int=Query(10, ge=1, le=50),
@@ -97,7 +98,7 @@ def get_all_appointment_paginated(
     db_appointment = get_all_appointments(db, page, limit, status)
     return db_appointment
 
-@router.get("/appointments/{id}", response_model=list[AppointmentResponse], description="Get single appointment")
+@router.get("/appointments/{id}", response_model=AppointmentResponse,status_code=status.HTTP_200_OK, description="Get single appointment")
 def get_single_appointment(id: int, db: Session = Depends(get_db),current_user: dict= Depends(get_current_user)):
     db_appointment = get_appointments_by_id(db, id)
     if not db_appointment:
@@ -107,13 +108,18 @@ def get_single_appointment(id: int, db: Session = Depends(get_db),current_user: 
         )
     return db_appointment
 
-@router.put("/appointment/{id}", response_model=AppointmentResponse, description="Update appointment")
+@router.put("/appointment/{id}", response_model=AppointmentResponse,status_code=status.HTTP_200_OK, description="Update appointment")
 def update_appointment(id: int, update: AppointmentUpdate, db: Session = Depends(get_db), current_user: dict= Depends(get_current_user)):
     db_appointment = update_appointment_by_id(db, id, update)
+    if not db_appointment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Appointment not found"
+        )
     return db_appointment
 
 
-@router.delete("/appointment/{id}", description="Delete/Cancel appointment")
+@router.delete("/appointment/{id}", status_code=status.HTTP_200_OK,description="Delete/Cancel appointment")
 def delete_appointment(id: int, db:Session= Depends(get_db), current_user: dict= Depends(get_current_user)):
     db_appointment = delete_appointment_by_id(db, id)
     if not db_appointment:

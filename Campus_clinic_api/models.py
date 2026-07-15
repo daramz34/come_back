@@ -6,8 +6,8 @@ from sqlalchemy.orm import relationship
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True)
-    username = Column(String, index=True, nullable=False)
-    email = Column(String, index=True, nullable=False)
+    username = Column(String, index=True, nullable=False, unique=True)
+    email    = Column(String, index=True, nullable=False, unique=True)
     hashed_password = Column(String, nullable=False)
     role = Column(String, nullable=False)
 
