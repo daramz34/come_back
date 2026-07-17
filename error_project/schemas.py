@@ -2,35 +2,42 @@ from pydantic import BaseModel, EmailStr
 from datetime import datetime
 from typing import List
 
-class ItemCreate(BaseModel):
-    name: str
-    description: str
-    price: float
+
+class UserCreate(BaseModel):
     email: EmailStr
     password: str
 
-
-class ItemResponse(BaseModel):
+class UserResponse(BaseModel):
     id: int
-    name: str
     email: EmailStr
-    price: float
-    description: str
     created_at: datetime
-    
 
     class Config:
         from_attributes = True
 
 
+class ItemCreate(BaseModel):
+    name: str
+    description: str
+    price: float
+
+class ItemResponse(BaseModel):
+    id: int
+    name: str
+    price: float
+    description: str
+    user_id: int
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
 class PaginationItemResponse(BaseModel):
     total: int
     page: int
     limit: int
-    results: list[ItemResponse]
-
+    results: List[ItemResponse]
 
 class Token(BaseModel):
     access_token: str
-    token_type:str
-
+    token_type: str
