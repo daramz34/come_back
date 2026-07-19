@@ -1,4 +1,4 @@
-from Campus_clinic_api.schemas import AppointmentCreate,AppointmentResponse,AppointmentUpdate,UserCreate,UserResponse,TokenResponse
+from Campus_clinic_api.schemas import AppointmentCreate,AppointmentResponse,AppointmentUpdate,UserCreate,UserResponse,TokenResponse, DoctorResponse
 from sqlalchemy.orm import Session
 from Campus_clinic_api.models import User, Appointment
 from passlib.context import CryptContext
@@ -63,7 +63,14 @@ def get_all_appointments(db: Session, page: int=1, limit: int=10, status: Litera
 
     }
 
+def get_all_doctors(db: Session):
+    db_doc = db.query(User).filter(User.role == "Doctor").all()
+    if not db_doc:
+        return None
+    return db_doc
 
+def get_current_logged_in_user(user):
+    return user
 
 def get_appointments_by_id(db: Session, id: int):
     db_user = db.query(Appointment).filter(Appointment.id == id).first()

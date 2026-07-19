@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h2 id="welcome-message">Welcome ....</h2>
+    <h3 id="user-role"></h3>
+
+
+    <button id="book-appointment">Book Appointment</button>
+    <button id="view-appointment">View Appointment</button>
+    <button id="logout">Logout</button>
+    <br><br>
+
+    <div id="appointment-form" style="display: none;">
+        <h3>Book Appointment</h3>
+        <input type="text" id="title" placeholder="Title">
+
+        <br><br>
+
+        <textarea id="description" placeholder="Description">
+
+        </textarea>
+        <br><br>
+
+        <input type="datetime-local" id="appointment-date">
+
+        <br><br>
+        <select  id="doctor">
+            <option>
+                Select Doctor
+            </option>
+        </select>
+        <br><br>
+
+        <button id="submit-appointment">Submit</button>
+    </div>
+
+
+    <script>
+        const token = localStorage.getItem("token");
+        
+        async function getCurrentUser() {
+            const response = await fetch("/Campus_clinic/me",
+            {
+                method:"GET",
+                headers:{
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+        );
+       
+        const data = await response.json();
+        console.log(data.role);
+        if(data.role == "Doctor"){
+            document.getElementById(
+                "book-appointment"
+
+            ).style.display = "none";
+        }
+       document.getElementById(
+        "welcome-message"
+       ).innerText = `Welcome ${data.username}`;
+
+       document.getElementById(
+        "user-role"
+       ).innerText = data.role;
+       }
+       
+
+            
+       const bookAppointmentButton = document.getElementById("book-appointment");
+       bookAppointmentButton.addEventListener(
+        "click",
+        ()=>{
+            document.getElementById(
+                "appointment-form"
+            ).style.display = "block";
+        }
+       );
+
+
+       async function getDoctors() {
+        const response = await fetch(
+            "/Campus_clinic/doctors",
+            {
+                method: "GET",
+                headers:{
+                    "Authorization": `Bearer ${token}`
+                }
+            }
+       );
+       const data = await response.json();
+       const doctorSelect = document.getElementById("doctor");
+       data.forEach((doctor)=>{
+            const option =
+            document.createElement("option");
+            option.value = doctor.id;
+
+            option.textContent =
+            doctor.username;
+            doctorSelect.appendChild(option);
+
+        });
+    
+    }
+       getCurrentUser();
+       getDoctors();
+    </script>
+</body>
+</html>

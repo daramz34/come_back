@@ -2,10 +2,10 @@ from fastapi import APIRouter, HTTPException, Query, status, Depends
 from Campus_clinic_api.crud import (
     get_all_appointments, get_appointments_by_id,
     update_appointment_by_id,delete_appointment_by_id,
-    create_appointment,create_user,authenticate_user,
+    create_appointment,create_user,authenticate_user, get_all_doctors
 )
 from Campus_clinic_api.schemas import (
-    UserResponse,TokenResponse,PaginatedResponse,
+    UserResponse,TokenResponse,PaginatedResponse, DoctorResponse,MeResponse,
     AppointmentResponse, UserCreate, AppointmentCreate, AppointmentUpdate
     )
 from Campus_clinic_api.database import get_db, Base, engine
@@ -129,3 +129,12 @@ def delete_appointment(id: int, db:Session= Depends(get_db), current_user: dict=
         )
     return db_appointment
 
+@router.get("/doctors", response_model=list[DoctorResponse], description="Get all doctors")
+def get_doctor(db: Session= Depends(get_db), current_user: dict= Depends(get_current_user)):
+    db_doc = get_all_doctors(db)
+    return db_doc
+
+
+@router.get("/me", response_model=MeResponse, description="Returns the currently logged in user")
+def get_me(current_user: User = Depends(get_current_user)):
+    return current_user

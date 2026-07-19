@@ -19,7 +19,11 @@ class UserResponse(BaseModel):
         from_attributes = True
 
 
-
+class MeResponse(BaseModel):
+    username: str
+    role: Literal["Student", "Doctor"]
+    class Config:
+        from_attributes = True
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
@@ -27,7 +31,7 @@ class TokenResponse(BaseModel):
 class AppointmentCreate(BaseModel):
     title: str
     description: Optional[str] = None
-    date: datetime
+    appointment_date: datetime
     doctor_id : int
     
 class AppointmentUpdate(BaseModel):
@@ -36,6 +40,12 @@ class AppointmentUpdate(BaseModel):
     date: Optional[datetime] = None
     status: Optional[Literal["pending", "confirmed", "cancelled"]] = None
 
+class DoctorResponse(BaseModel):
+    id: int
+    username: str
+
+    class Config:
+        from_attributes = True
 class AppointmentResponse(BaseModel):
     id: int
     title: str
