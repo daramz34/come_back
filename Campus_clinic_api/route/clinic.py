@@ -95,7 +95,7 @@ def get_all_appointment_paginated(
     status: str = Query(None),
     db: Session= Depends(get_db), 
     current_user: dict = Depends(get_current_user)):
-    db_appointment = get_all_appointments(db, page, limit, status)
+    db_appointment = get_all_appointments(db, page, limit, status, current_user)
     return db_appointment
 
 @router.get("/appointments/{id}", response_model=AppointmentResponse,status_code=status.HTTP_200_OK, description="Get single appointment")

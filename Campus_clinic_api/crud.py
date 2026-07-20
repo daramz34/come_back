@@ -46,13 +46,17 @@ def create_appointment(db: Session, appointment: AppointmentCreate, current_user
     return db_appointment
 
 
-def get_all_appointments(db: Session, page: int=1, limit: int=10, status: Literal["pending", "confirmed", "cancelled"]= None):
-    offset = (page - 1) *limit
+def get_all_appointments(db: Session, page: int=1, limit: int=10, status: Literal["pending", "confirmed", "cancelled"]= None, current_user: User =None):
+   
     query = db.query(Appointment)
-    
+    if current_user.role == "Doctor":
+        query = query.filter(Appointment.doctor_id==current_user.id)
+    elif current_user.role == "Student":
+        query = query.filter(Appointment.student_id == current_user.id)
     if status:
         query = query.filter(Appointment.status == status)
 
+    offset = (page - 1) *limit
     total = query.count()
     appointments = (query.offset(offset).limit(limit).all())
     return {

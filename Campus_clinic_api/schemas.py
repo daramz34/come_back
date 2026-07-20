@@ -37,7 +37,7 @@ class AppointmentCreate(BaseModel):
 class AppointmentUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
-    date: Optional[datetime] = None
+    appointment_date: Optional[datetime] = None
     status: Optional[Literal["pending", "confirmed", "cancelled"]] = None
 
 class DoctorResponse(BaseModel):
@@ -50,7 +50,7 @@ class AppointmentResponse(BaseModel):
     id: int
     title: str
     description: Optional[str] = None
-    date: datetime
+    appointment_date: datetime
     status: Literal["pending", "confirmed", "cancelled"]
     created_at: datetime
     student: UserResponse

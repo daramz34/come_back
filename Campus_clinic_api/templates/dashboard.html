@@ -30,85 +30,276 @@
 
         <br><br>
         <select  id="doctor">
-            <option>
+            <option value="">
                 Select Doctor
             </option>
         </select>
         <br><br>
 
-        <button id="submit-appointment">Submit</button>
+        <button id="submit-appointment">
+            Submit
+        </button>
+    </div>
+
+
+    <h2>Your Appointments</h2>
+    <div id="appointments">
+        Appointment1
+        Appointment2
+        Appointment3
     </div>
 
 
     <script>
         const token = localStorage.getItem("token");
-        
-        async function getCurrentUser() {
-            const response = await fetch("/Campus_clinic/me",
-            {
-                method:"GET",
-                headers:{
-                    "Authorization": `Bearer ${token}`
+
+
+        async function getCurrentUser(){
+
+            const response = await fetch(
+
+                "/Campus_clinic/me",
+
+                {
+
+                    method:"GET",
+
+                    headers:{
+
+                        "Authorization":
+                        `Bearer ${token}`
+
+                    }
+
                 }
+
+            );
+
+
+            const data = await response.json();
+            console.log(data)
+
+
+            if(data.role === "Doctor"){
+
+                document.getElementById(
+                    "book-appointment"
+                ).style.display = "none";
+
             }
-        );
-       
-        const data = await response.json();
-        console.log(data.role);
-        if(data.role == "Doctor"){
+
+
             document.getElementById(
-                "book-appointment"
+                "welcome-message"
+            ).innerText =
+            `Welcome ${data.username}`;
 
-            ).style.display = "none";
+
+            document.getElementById(
+                "user-role"
+            ).innerText =
+            data.role;
+
         }
-       document.getElementById(
-        "welcome-message"
-       ).innerText = `Welcome ${data.username}`;
 
-       document.getElementById(
-        "user-role"
-       ).innerText = data.role;
-       }
-       
+
+
+
+        const bookAppointmentButton =
+
+        document.getElementById(
+            "book-appointment"
+        );
+
+
+        bookAppointmentButton.addEventListener(
+
+            "click",
+
+            ()=>{
+
+                document.getElementById(
+                    "appointment-form"
+                ).style.display = "block";
+
+            }
+
+        );
+
+
+
+        async function getDoctors(){
+
+
+            const response = await fetch(
+
+                "/Campus_clinic/doctors",
+
+                {
+
+                    method:"GET",
+
+                    headers:{
+
+                        "Authorization":
+                        `Bearer ${token}`
+
+                    }
+
+                }
+
+            );
+
+
+            const data =
+            await response.json();
+
+
+            const doctorSelect =
+            document.getElementById(
+                "doctor"
+            );
+
+
+            data.forEach((doctor)=>{
+
+
+                const option =
+                document.createElement(
+                    "option"
+                );
+
+
+                option.value =
+                doctor.id;
+
+
+                option.textContent =
+                doctor.username;
+
+
+                doctorSelect.appendChild(
+                    option
+                );
+
+
+            });
+
+
+        }
+
+
+
+        
+
+        const submitAppointmentButton = document.getElementById("submit-appointment");
+        submitAppointmentButton.addEventListener("click", createAppointment);
+
+        async function createAppointment() {
+            const title = document.getElementById("title").value;
+            const description = document.getElementById("description").value;
+            const doctor_id = document.getElementById("doctor").value;
+            const appointment_date = document.getElementById("appointment-date").value;
+            if(!doctor_id){
+                alert("Please select a doctor.");
+                return;
+            }
+            
+            const response = await fetch(
+                "/Campus_clinic/appointments",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":"application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        title:title,
+                        description:description,
+                        doctor_id:Number(doctor_id),
+                        appointment_date:appointment_date
+                    })
+
+                }
+            );
+            const data = await response.json();
+            if(response.ok){
+                alert("Appointment successfully submitted.");
+                document.getElementById("title").value = "";
+                document.getElementById("description").value = "";
+                document.getElementById("appointment-date").value = "";
+                document.getElementById("doctor").selectedIndex = 0;
+
+                document.getElementById("appointment-form").style.display = "none";
+            }else{
+                alert(
+                    data.detail || "Something went wrong"
+                );
+            }
+    }
+
+            async function getAppointment() {
+            const response = await fetch(
+                "/Campus_clinic/appointments",
+                {
+                    method: "GET",
+                    headers:{
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
+            ); 
+            if(!response.ok){
+                alert("Couldn't fetch appointments.");
+                return;
+            }
+            const data = await response.json();
+            console.log(data)
+            
+            const appointmentsDiv = document.getElementById("appointments");
+            appointmentsDiv.innerHTML = "";
+            data.results.forEach(
+                (appointment)=>{
+                    const appointmentCard = document.createElement("div");
+                    appointmentCard.style.border = "1px solid black";
+            appointmentCard.style.padding = "10px";
+            appointmentCard.style.margin ="10px";
+            appointmentCard.style.borderRadius= "10px";
+            
+            appointmentCard.innerHTML = `
+            <h3>${appointment.title}</h3>
+            
+            <p>
+                Description:${appointment.description}</p>
+            
+            <p>
+                Status: ${appointment.status}
+                </p>
+            <p>
+                Appointment Date: ${appointment.appointment_date}
+                </p>    `;
+            
+
+            appointmentsDiv.appendChild(
+                appointmentCard
+            );
+                }
+                
+            );
 
             
-       const bookAppointmentButton = document.getElementById("book-appointment");
-       bookAppointmentButton.addEventListener(
-        "click",
-        ()=>{
-            document.getElementById(
-                "appointment-form"
-            ).style.display = "block";
+            console.log(data)
         }
-       );
+
+        window.onload = ()=>{
+            getCurrentUser();
+
+            getDoctors();
+            getAppointment();
+
+        }
+        
 
 
-       async function getDoctors() {
-        const response = await fetch(
-            "/Campus_clinic/doctors",
-            {
-                method: "GET",
-                headers:{
-                    "Authorization": `Bearer ${token}`
-                }
-            }
-       );
-       const data = await response.json();
-       const doctorSelect = document.getElementById("doctor");
-       data.forEach((doctor)=>{
-            const option =
-            document.createElement("option");
-            option.value = doctor.id;
-
-            option.textContent =
-            doctor.username;
-            doctorSelect.appendChild(option);
-
-        });
-    
-    }
-       getCurrentUser();
-       getDoctors();
-    </script>
+</script>
 </body>
 </html>
