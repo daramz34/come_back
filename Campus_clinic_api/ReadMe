@@ -1,0 +1,108 @@
+# Campus Clinic Management System
+
+## About the Project
+
+The Campus Clinic Management System is a role-based appointment management system built with FastAPI, HTML, CSS, and JavaScript. It allows students to book appointments with doctors while enabling doctors to manage and update appointment statuses in real time.
+
+I initially built this project as a backend-focused application because I am currently learning Backend Development. However, after taking an interview test that involved frontend concepts, I was inspired to challenge myself by adding a user interface to one of my projects. This gave me the opportunity to explore how the frontend communicates with APIs and provided valuable experience working across both the backend and frontend of an application.
+
+This project became more than just an appointment system—it became a practical way for me to learn authentication, role-based access control, API integration, and full-stack development concepts.
+
+## Features
+
+* User Registration and Login
+* JWT Authentication and Authorization
+* Role-Based Access Control (Student and Doctor)
+* Book Appointments
+* View Appointments
+* Update Appointment Status (Pending, Confirmed, Cancelled)
+* Protected Dashboard Routes
+* Pagination Support
+* Appointment Filtering
+* Responsive User Interface
+* Logout Functionality
+* Loading and Error Handling Messages
+
+## Technologies Used
+
+### Backend
+
+* Python
+* FastAPI
+* SQLAlchemy
+* SQLite
+* JWT Authentication
+
+### Frontend
+
+* HTML
+* CSS
+* JavaScript
+
+## User Roles
+
+### Student
+
+Students can:
+
+* Register and Login
+* Book appointments with doctors
+* View appointment statuses
+* Logout securely
+
+### Doctor
+
+Doctors can:
+
+* Login to their dashboard
+* View appointments assigned to them
+* Confirm appointments
+* Cancel appointments
+* Logout securely
+
+## Appointment Workflow
+
+```text
+Student Books Appointment
+            ↓
+         Pending
+            ↓
+Doctor Reviews Appointment
+       ↙            ↘
+ Confirmed         Cancelled
+            ↓
+Student Receives Updated Status
+```
+
+## What I Learned
+
+Building this project helped me learn:
+
+* API Development with FastAPI
+* Authentication using JWT Tokens
+* CRUD Operations
+* Pagination and Filtering
+* Role-Based Access Control
+* Frontend and Backend Integration
+* Working with SQLAlchemy ORM
+* Debugging API and JavaScript Issues
+* Structuring Larger Projects
+
+## Future Improvements
+
+* Email Notifications
+* Appointment Search Functionality
+* Admin Dashboard
+* Profile Management
+* Dark Mode Support
+* Improved Mobile Responsiveness
+
+## Author
+
+**OLUWADARASIMI ROTIMI**
+
+Backend Developer (Learning Full-Stack Development)
+
+GitHub: https://github.com/daramz34
+
+Thank you for checking out my project. Feedback and contributions are always welcome.

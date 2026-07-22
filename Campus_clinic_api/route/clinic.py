@@ -2,10 +2,10 @@ from fastapi import APIRouter, HTTPException, Query, status, Depends
 from Campus_clinic_api.crud import (
     get_all_appointments, get_appointments_by_id,
     update_appointment_by_id,delete_appointment_by_id,
-    create_appointment,create_user,authenticate_user, get_all_doctors
+    create_appointment,create_user,authenticate_user, get_all_doctors, update_appointment_status
 )
 from Campus_clinic_api.schemas import (
-    UserResponse,TokenResponse,PaginatedResponse, DoctorResponse,MeResponse,
+    UserResponse,TokenResponse, AppointmentStatusUpdate,PaginatedResponse, DoctorResponse,MeResponse,
     AppointmentResponse, UserCreate, AppointmentCreate, AppointmentUpdate
     )
 from Campus_clinic_api.database import get_db, Base, engine
@@ -138,3 +138,24 @@ def get_doctor(db: Session= Depends(get_db), current_user: dict= Depends(get_cur
 @router.get("/me", response_model=MeResponse, description="Returns the currently logged in user")
 def get_me(current_user: User = Depends(get_current_user)):
     return current_user
+
+
+@router.patch("/appointments/{appointment_id}/status")
+def update_status(appointment_id: int, status_update: AppointmentStatusUpdate, db: Session =Depends(get_db), current_user=Depends(get_current_user)):
+    if current_user.role != "Doctor":
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only doctors can update appointment status"
+        )
+    appointment = update_appointment_status(db, appointment_id, status_update)
+    if not appointment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail= "Appointment not found"
+        )
+    if appointment.doctor_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail= "You are not allowed to modify this appointment"
+        )
+    return appointment

@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request
 from Campus_clinic_api.database import Base, engine
 from Campus_clinic_api.route import clinic
 from fastapi.templating import Jinja2Templates
-
+from fastapi.staticfiles import StaticFiles
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI(title="Campus Clinic API",
@@ -13,6 +13,7 @@ app = FastAPI(title="Campus Clinic API",
 app.include_router(clinic.router)
 
 templates = Jinja2Templates(directory="Campus_clinic_api/templates")
+app.mount("/static",StaticFiles(directory="Campus_clinic_api/static"), name="static" )
 
 @app.get("/")
 def home(request: Request):

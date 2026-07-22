@@ -1,4 +1,4 @@
-from Campus_clinic_api.schemas import AppointmentCreate,AppointmentResponse,AppointmentUpdate,UserCreate,UserResponse,TokenResponse, DoctorResponse
+from Campus_clinic_api.schemas import AppointmentCreate,AppointmentResponse,AppointmentUpdate,UserCreate,UserResponse,TokenResponse, DoctorResponse, AppointmentStatusUpdate
 from sqlalchemy.orm import Session
 from Campus_clinic_api.models import User, Appointment
 from passlib.context import CryptContext
@@ -106,3 +106,15 @@ def delete_appointment_by_id(db:Session, id: int):
     return{
         "Msg": "Deleted successfully"
     }
+
+def update_appointment_status(db: Session, appointment_id:int, status_update:AppointmentStatusUpdate):
+
+    appointment = db.query(Appointment).filter(Appointment.id == appointment_id).first()
+
+    if not appointment:
+        return None
+    
+    appointment.status = (status_update.status)
+    db.commit()
+    db.refresh(appointment)
+    return appointment

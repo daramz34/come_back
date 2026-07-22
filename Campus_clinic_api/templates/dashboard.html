@@ -4,54 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <link rel="stylesheet" href="/static/dashboard.css">
 </head>
 <body>
-    <h2 id="welcome-message">Welcome ....</h2>
-    <h3 id="user-role"></h3>
+    <body>
+
+        <div class="container">
 
 
-    <button id="book-appointment">Book Appointment</button>
-    <button id="view-appointment">View Appointment</button>
-    <button id="logout">Logout</button>
-    <br><br>
+        <div class="welcome-card">
 
-    <div id="appointment-form" style="display: none;">
-        <h3>Book Appointment</h3>
+        <h1>CAMPUS CLINIC</h1>
+
+
+        <h2 id="welcome-message">Welcome ....</h2>
+
+
+        <span id="user-role">Student</span>
+
+
+        <button id="logout">LOGOUT</button>
+
+        </div>
+
+
+
+        <div class="appointment-card">
+
+
+        <button id="book-appointment">
+
+        BOOK APPOINTMENT
+
+        </button>
+
+
+
+        <div id="appointment-form"
+        style="display:none;">
+
+
+        <h2>
+        Book Appointment
+        </h2>
+
+
         <input type="text" id="title" placeholder="Title">
-
-        <br><br>
 
         <textarea id="description" placeholder="Description">
 
         </textarea>
-        <br><br>
-
         <input type="datetime-local" id="appointment-date">
 
-        <br><br>
-        <select  id="doctor">
-            <option value="">
-                Select Doctor
-            </option>
+
+        <select id="doctor">
+
+        <option value="">Select Doctor</option>
+
         </select>
-        <br><br>
 
-        <button id="submit-appointment">
-            Submit
-        </button>
+
+        <button id="submit-appointment"> SUBMIT </button>
+    
     </div>
 
+        </div>
 
-    <h2>Your Appointments</h2>
-    <div id="appointments">
-        Appointment1
-        Appointment2
-        Appointment3
-    </div>
+
+
+
+        <div class="appointment-section">
+
+
+        <h2>Your Appointments</h2>
+
+
+        <div id="appointments">
+
+        </div>
+
+
+        </div>
+
+
+        </div>
+
+
+
+
+
+
+
 
 
     <script>
         const token = localStorage.getItem("token");
+        if(!token){
+            window.location.href="/login";
+        }
 
 
         async function getCurrentUser(){
@@ -99,6 +149,9 @@
                 "user-role"
             ).innerText =
             data.role;
+
+            window.userRole = data.role;
+            window.userId = data.id;
 
         }
 
@@ -231,12 +284,15 @@
                 document.getElementById("doctor").selectedIndex = 0;
 
                 document.getElementById("appointment-form").style.display = "none";
+                await getAppointment();
             }else{
                 alert(
                     data.detail || "Something went wrong"
                 );
             }
     }
+
+
 
             async function getAppointment() {
             const response = await fetch(
@@ -248,49 +304,144 @@
                     }
                 }
             ); 
+            const appointmentsDiv = document.getElementById("appointments");
+            appointmentsDiv.innerHTML = "<h3> Loading appointment... </h3>";
             if(!response.ok){
                 alert("Couldn't fetch appointments.");
                 return;
             }
             const data = await response.json();
+            console.log(data);
+            console.log(data.results);
+            console.log(data.results.length);
+            console.log(window.userRole)
+            if(data.results.length===0){
+                console.log("ZERO APPOINTMENTS")
+            }
+             appointmentsDiv.innerHTML = "";
             console.log(data)
             
-            const appointmentsDiv = document.getElementById("appointments");
-            appointmentsDiv.innerHTML = "";
+   
             data.results.forEach(
                 (appointment)=>{
                     const appointmentCard = document.createElement("div");
-                    appointmentCard.style.border = "1px solid black";
-            appointmentCard.style.padding = "10px";
-            appointmentCard.style.margin ="10px";
-            appointmentCard.style.borderRadius= "10px";
-            
+                    appointmentCard.style.border = "1px solid #ddd";
+            appointmentCard.style.padding = "20px";
+            appointmentCard.style.margin ="20px";
+            appointmentCard.style.borderRadius= "15px";
+            appointmentCard.style.boxShadow = "0 0 10px rgba(0,0,0,0.1)";
+            let statusColor ="";
+            if(appointment.status==="pending"){
+                statusColor="orange";
+            }
+            else if(appointment.status==="confirmed"){
+                statusColor="green";
+            }
+            else{
+                statusColor="red";
+            }
             appointmentCard.innerHTML = `
             <h3>${appointment.title}</h3>
             
             <p>
-                Description:${appointment.description}</p>
+                <strong> Description:</strong>
+                <br>
+                ${appointment.description}
             
             <p>
-                Status: ${appointment.status}
+                <strong> Status:</strong>
+                Status: <span style="color:${statusColor}; font-weight:bold;">
+                    ${appointment.status.charAt(0).toUpperCase()+appointment.status.slice(1)}</span>
                 </p>
             <p>
-                Appointment Date: ${appointment.appointment_date}
+                <strong> Appointment Date:</strong>
+                <br>
+                ${appointment.appointment_date}
                 </p>    `;
+            if(window.userRole ==="Doctor" && appointment.status==="pending"){
+               
+                const confirmButton = document.createElement("button");
+                confirmButton.innerHTML = "Confirm";
+                const cancelButton = document.createElement("button");
+                cancelButton.innerText="Cancel";
+                appointmentCard.appendChild(confirmButton);
+                appointmentCard.appendChild(cancelButton);
+
+                confirmButton.style.backgroundColor="green";
+                confirmButton.style.color="white";
+                confirmButton.style.border="none";
+                confirmButton.style.padding="8px";
+                confirmButton.style.marginRight="10px";
+                confirmButton.style.cursor="pointer";
+                
+                cancelButton.style.backgroundColor="red";
+                cancelButton.style.color="white";
+                cancelButton.style.border="none";
+                cancelButton.style.padding="8px";
+                cancelButton.style.cursor="pointer";
+
+
+                confirmButton.addEventListener("click", ()=> {
+                    updateAppointmentStatus(appointment.id, "confirmed");
+                });
+                cancelButton.addEventListener("click", ()=> {
+                    updateAppointmentStatus(
+                        appointment.id, "cancelled"
+                    );
+                });
+            }
             
 
-            appointmentsDiv.appendChild(
-                appointmentCard
-            );
+            appointmentsDiv.appendChild(appointmentCard);
                 }
                 
             );
 
             
             console.log(data)
+
         }
 
-        window.onload = ()=>{
+
+
+        async function updateAppointmentStatus(appointmentId, status) {
+            const response  = await fetch(`/Campus_clinic/appointments/${appointmentId}/status`,
+                {
+                    method: "PATCH",
+                    headers:{"Content-Type": "application/json", "Authorization": `Bearer ${token}`
+                    },
+                    body:JSON.stringify(
+                        {
+                            status:status
+                        }
+                    )
+                }
+            );
+            const data = await response.json();
+            if(response.ok){
+                alert(`Appointment ${status}.`);
+                getAppointment();
+
+            }
+            else{
+                alert("Couldn't update status");
+            }
+            
+
+        }
+
+        const logoutButton = document.getElementById("logout");
+        logoutButton.addEventListener("click", logout);
+        function logout(){
+            const answer = confirm("Are you sure you want to logout?");
+            if(!answer){
+                return;
+            }
+            localStorage.removeItem("token");
+            window.location.href="/"}
+        
+
+        window.onload =  async ()=>{
             getCurrentUser();
 
             getDoctors();

@@ -70,3 +70,6 @@ class PaginatedResponse(BaseModel):
         from_attributes = True
 
 
+class AppointmentStatusUpdate(BaseModel):
+    status: Literal["pending", "confirmed", "cancelled"]
+
