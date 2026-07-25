@@ -12,7 +12,13 @@ class User(Base):
     hashed_password = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
+class Category(Base):
+    __tablename__ = "categories"
 
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, unique=True, nullable=False, index=True)
+
+    items = relationship("Item", back_populates="category")
 class Item(Base):
     __tablename__ = "item"
     
@@ -24,3 +30,6 @@ class Item(Base):
     
     
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+    category = relationship("Category", back_populates="items")

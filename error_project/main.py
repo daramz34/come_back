@@ -101,6 +101,15 @@ def get_current_user(token: HTTPAuthorizationCredentials = Depends(security_sche
             detail="Could not validate credentials/Token invalid or expired"
         )
 
+
+
+# -- Create Category
+
+@app.post("/categories/", response_model=schemas.CategoryResponse, status_code=status.HTTP_201_CREATED)
+def create_category(category_in: schemas.CategoryCreate, db: Session = Depends(get_db)):
+    return crud.create_category(db=db, category_in=category_in)
+
+
 # --- INVENTORY ITEMS ROUTES ---
 
 # Create items (requires a valid JWT token now!)
@@ -116,7 +125,12 @@ def api_create_items(
 @app.get("/items1/", response_model=list[schemas.ItemResponse])
 def api_get_items(db: Session = Depends(get_db)):
     return crud.get_item(db)
-
+@app.get("/items/{item_id}", response_model=schemas.ItemResponse)
+def get_single_items(item_id: int, db: Session = Depends(get_db)):
+    db_item = db.query(crud.Item).filter(crud.Item.id == item_id).first()
+    if not db_item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return db_item
 @app.get("/items/", response_model=schemas.PaginationItemResponse)
 def read_items(
     page: int = Query(1, ge=1), 

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 
 class UserCreate(BaseModel):
@@ -15,11 +15,22 @@ class UserResponse(BaseModel):
     class Config:
         from_attributes = True
 
+class CategoryBase(BaseModel):
+    name: str
+
+class CategoryCreate(CategoryBase):
+    pass
+class CategoryResponse(CategoryBase):
+    id: int
+
+    class Config:
+        from_attributes = True
 
 class ItemCreate(BaseModel):
     name: str
     description: str
     price: float
+    category_id: Optional[int] = None
 
 class ItemResponse(BaseModel):
     id: int
@@ -28,6 +39,9 @@ class ItemResponse(BaseModel):
     description: str
     user_id: int
     created_at: datetime
+    category_id: Optional[int] = None
+
+    category: Optional[CategoryResponse] =None
 
     class Config:
         from_attributes = True

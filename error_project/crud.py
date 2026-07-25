@@ -1,6 +1,6 @@
 from error_project.database import SessionLocal
-from error_project.models import Item, User  
-from error_project.schemas import ItemCreate, UserCreate
+from error_project.models import Item, User, Category  
+from error_project.schemas import CategoryResponse, CategoryCreate, ItemCreate, UserCreate
 from sqlalchemy.orm import Session
 from error_project.security import hash_password
 
@@ -19,13 +19,27 @@ def create_user(db: Session, user_in: UserCreate):
 def get_user_by_email(db: Session, email: str):
     return db.query(User).filter(User.email == email).first()
 
+
+
+# ---- CATEGORY CRUD OPERATIONS -----
+def create_category(db: Session, category_in: CategoryCreate):
+    db_category = Category(name=category_in.name)
+    db.add(db_category)
+    db.commit()
+    db.refresh(db_category)
+    return db_category
+
+def get_categories(db: Session):
+    return db.query(Category).all()
+
 # --- ITEM CRUD OPERATIONS ---
 def create_item(db: Session, item_in: ItemCreate, owner_id: int):
     db_item = Item(
         name=item_in.name,
         description=item_in.description,
         price=item_in.price,
-        user_id=owner_id  
+        user_id=owner_id,
+        category_id=item_in.category_id
     )
     db.add(db_item)
     db.commit()
