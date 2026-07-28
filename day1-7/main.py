@@ -1,9 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 
 app = FastAPI()
 #RESTFUL Routing
 @app.get("/home")
-def home():
+def home(request: Request):
+    print(request.headers)
     return {
         "Message" : "HELLO WORLD"
     }
