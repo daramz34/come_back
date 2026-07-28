@@ -10,6 +10,7 @@ from error_project.database import Base, engine, get_db
 import error_project.crud as crud
 from error_project.security import verify_password, hash_password, create_access_token
 import error_project.schemas as schemas
+import time
 
 app = FastAPI()
 origins = [
@@ -26,6 +27,10 @@ app.add_middleware(CORSMiddleware,
                    allow_headers=["*"],)
 security_scheme = HTTPBearer()
 Base.metadata.create_all(bind=engine)
+
+# setting up cache
+CACHE = {}
+CACHE_TTL = 60
 
 # Keep your exception handlers exactly as they are!
 @app.exception_handler(HTTPException)
@@ -135,16 +140,32 @@ def api_create_items(
     owner_id = current_user.get("user_id")
     return crud.create_item(db=db, item_in=item_in, owner_id=owner_id)
 
-@app.get("/items1/", response_model=list[schemas.ItemResponse])
+@app.get("/items/", response_model=list[schemas.ItemResponse])
 def api_get_items(db: Session = Depends(get_db)):
-    return crud.get_item(db)
+    current_time = time.time()
+    if "items_list" in CACHE:
+        cached_data, timestamp = CACHE["items_list"]
+        if current_time - timestamp < CACHE_TTL:
+            print("🟢 [CACHE HIT]: Returning items from memory")
+            
+            return cached_data
+    print("🔴 [CACHE MISS]: Fetching items from database")
+    
+    items = crud.get_item(db)
+    item_responses = [schemas.ItemResponse.model_validate(item) for item in items]
+    CACHE["items_list"] = (item_responses, current_time)
+    return item_responses
+
+
 @app.get("/items/{item_id}", response_model=schemas.ItemResponse)
 def get_single_items(item_id: int, db: Session = Depends(get_db)):
     db_item = db.query(crud.Item).filter(crud.Item.id == item_id).first()
     if not db_item:
         raise HTTPException(status_code=404, detail="Item not found")
     return db_item
-@app.get("/items/", response_model=schemas.PaginationItemResponse)
+
+
+@app.get("/items/paginated/", response_model=schemas.PaginationItemResponse)
 def read_items(
     page: int = Query(1, ge=1), 
     limit: int = Query(5, ge=1, le=100),
