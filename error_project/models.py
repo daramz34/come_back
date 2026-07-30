@@ -19,6 +19,8 @@ class Category(Base):
     name = Column(String, unique=True, nullable=False, index=True)
 
     items = relationship("Item", back_populates="category")
+
+    
 class Item(Base):
     __tablename__ = "item"
     
