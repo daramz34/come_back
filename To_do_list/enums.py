@@ -1,10 +1,11 @@
 from enum import Enum
 
 class TodoStatus(str, Enum):
-    PENDING = "Pending"
-    COMPLETED = "Completed"
+    PENDING = "pending"
+    IN_PROGRESS = "in_progress"
+    COMPLETED = "completed"
 
 class Priority(str, Enum):
-    LOW = "Low"
-    MEDIUM = "Medium"
-    HIGH = "High"
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"

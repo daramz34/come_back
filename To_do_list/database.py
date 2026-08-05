@@ -1,12 +1,9 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-import os
+from To_do_list.core.config import settings
 
-BASE_URL = os.path.dirname(
-    os.path.abspath(__file__))
-DB_url = f"postgresql:///{BASE_URL}/to_do.db"
-engine = create_engine(DB_url, connect_args={"check_same_thread": False})
+engine = create_engine(settings.DATABASE_URL)
 
 SessionLocal = sessionmaker(autoflush=False, autocommit=False, bind=engine)
 
