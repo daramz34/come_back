@@ -39,6 +39,12 @@ class TodoResponse(BaseModel):
     class Config:
         from_attributes = True
 
+class TodoUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    status: Optional[TodoStatus] = None
+    priority: Optional[Priority] = None
+    due_date: Optional[datetime] = None
 
 class Token(BaseModel):
     access_token: str
