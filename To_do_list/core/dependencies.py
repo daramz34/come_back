@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from To_do_list.database import get_db
 from To_do_list.core.security import verify_access_token
 from To_do_list.model import User
-oauth_scheme = OAuth2PasswordBearer(tokenUrl="/To_do_list/todo_api/login")
+oauth_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 
 
