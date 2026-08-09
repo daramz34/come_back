@@ -1,0 +1,34 @@
+# Todo List API
+
+A REST API for managing todo tasks, built with FastAPI and PostgreSQL.
+
+## Features
+
+- User registration and authentication
+- JWT authentication
+- Create, read, update, and delete todos
+- Todo status and priority enums
+- Pagination
+- Filtering by status and priority
+- PostgreSQL database
+- SQLAlchemy ORM
+
+## Tech Stack
+
+- Python
+- FastAPI
+- PostgreSQL
+- SQLAlchemy
+- Pydantic
+- JWT
+
+## Running Locally
+
+1. Clone the repository
+2. Create a virtual environment
+3. Install the dependencies
+4. Create a `.env` file with the required environment variables
+5. Start the server with:
+
+```bash
+uvicorn To_do_list.main:app --reload
