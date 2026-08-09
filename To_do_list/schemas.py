@@ -24,7 +24,7 @@ class TodoCreate(BaseModel):
     description: Optional[str] = None
     status: TodoStatus
     priority: Priority
-    due_date: datetime
+    due_date: Optional[datetime] = None
     
 
 class TodoResponse(BaseModel):
@@ -33,7 +33,7 @@ class TodoResponse(BaseModel):
     description: Optional[str] = None
     status: TodoStatus
     priority: Priority
-    due_date: datetime
+    due_date: Optional[datetime] = None
     created_at: datetime
     updated_at: datetime
     class Config:
@@ -51,3 +51,8 @@ class Token(BaseModel):
     token_type: str = "bearer"
 
 
+class PaginatedTodoResponse(BaseModel):
+    total: int
+    page: int
+    limit: int
+    results: list[TodoResponse]
