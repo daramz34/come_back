@@ -37,7 +37,11 @@ class PostResponse(BaseModel):
     class config: 
         from_attributes= True
 
-
+class PaginatedPostResponse(BaseModel):
+    total: int
+    page: int
+    limit: int
+    results: list[PostResponse]
 class PostUpdate(BaseModel):
     title: Optional[str] = Field(None, max_length=100)
     content: Optional[str] = None
