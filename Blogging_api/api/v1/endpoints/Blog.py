@@ -14,6 +14,7 @@ from Blogging_api.models import User
 
 
 
+
 router = APIRouter(prefix="/blog", tags=["BLOG"])
 
 @router.post("/posts", response_model=PostResponse, status_code=status.HTTP_201_CREATED, description="Create a post")
