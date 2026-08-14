@@ -129,3 +129,21 @@ def create_likes(db: Session, post_id: int, current_user:User):
     db.commit()
     db.refresh(db_like)
     return db_like
+
+
+def get_my_post(db: Session, current_user: User, page: int =1, limit: int = 10): # this is to enable to user to see their own posts
+    offset = (page - 1) * limit
+    query = db.query(Post).filter(Post.author_id == current_user.id)
+
+    total = query.count()
+    posts = query.offset(offset).limit(limit).all()
+
+    return {
+        "total":total,
+        "page": page,
+        "limit": limit,
+        "results": posts
+    }
+
+def get_post_comments(db: Session, post_id: int):
+    return db.query(Comment).filter(Comment.post_id == post_id).all()
