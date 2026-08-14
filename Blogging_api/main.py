@@ -1,10 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from Blogging_api.api.v1.router import api_router
 from Blogging_api.database import Base, engine
-from To_do_list.core.config import settings
+from Blogging_api.core.config import settings
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 Base.metadata.create_all(bind=engine)
 
@@ -32,3 +34,14 @@ async def security_headers_middleware(request: Request, call_next):
 app.add_middleware(BaseHTTPMiddleware, dispatch=security_headers_middleware)
 
 app.include_router(api_router, prefix="/api/v1")
+
+
+
+templates = Jinja2Templates(directory="Blogging_api/frontend/templates")
+app.mount("/frontend/static", StaticFiles(directory="Blogging_api/frontend/static"))
+
+
+@app.get("/")
+def home(request: Request):
+    return templates.TemplateResponse("home.html", 
+                                      {"request": request})
