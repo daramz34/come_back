@@ -54,22 +54,12 @@ def get_all_posts(db:Session, page: int=1, limit: int=10):
         "limit": limit,
         "results": posts
     }
-    set_cache(cache_key, result, expire=60)
+    set_cache(cache_key, {"total": total, "page": page, "limit": limit}, expire=60)
     return result
 
 
 def get_post_by_id(db: Session, post_id: int):
-    cache_key = f"post:{post_id}"
-
-    cached = get_cache(cache_key)
-    if cached:
-        return cached
-
-
-    post = db.query(Post).filter(Post.id == post_id).first()
-    if post:
-        set_cache(cache_key, post, expire=120)
-    return post
+    return db.query(Post).filter(Post.id == post_id).first()
 
 def update_post_by_id(db: Session,post_id: int, update: PostUpdate, current_user:User):
     db_post = db.query(Post).filter(Post.id == post_id,
@@ -134,7 +124,7 @@ def create_likes(db: Session, post_id: int, current_user:User):
     if existing:
         return None
     db_like = Like(post_id =post_id,
-                   user = current_user.id)
+                   user_id= current_user.id)
     db.add(db_like)
     db.commit()
     db.refresh(db_like)

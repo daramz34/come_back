@@ -36,6 +36,10 @@ class Post(Base):
     comments = relationship("Comment", back_populates="post", cascade="all, delete")
     likes = relationship("Like", back_populates="post", cascade="all, delete")
 
+    @property
+    def like_count(self):
+        return len(self.likes)
+
 
 class Comment(Base):
     __tablename__ = "comment"
