@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D Blog — Feed</title>
+    <link rel="stylesheet" href="/static/base.css">
+    <link rel="stylesheet" href="/static/feed.css">
+</head>
+<body>
+
+    
+    <nav>
+        <a href="/" class="nav-logo">♟ D Blog</a>
+        <div class="nav-links" id="nav-links">
+            
+        </div>
+    </nav>
+
+    
+    <section class="feed-section">
+        <div class="feed-header">
+            <h1>Latest Posts</h1>
+            <p class="feed-sub">Discover ideas from writers around the world</p>
+        </div>
+
+        <div class="posts-grid" id="posts-grid">
+            
+        </div>
+
+       
+        <div class="pagination" id="pagination">
+            <button class="btn btn-outline" id="prev-btn" onclick="changePage(-1)">← Prev</button>
+            <span id="page-info"></span>
+            <button class="btn btn-outline" id="next-btn" onclick="changePage(1)">Next →</button>
+        </div>
+    </section>
+
+    <script>
+        let currentPage = 1
+        const limit = 6
+
+        
+        function setupNav() {
+            const token = localStorage.getItem('token')
+            const navLinks = document.getElementById('nav-links')
+
+            if (token) {
+                navLinks.innerHTML = `
+                    <a href="/create" class="btn btn-outline">New Post</a>
+                    <a href="/dashboard" class="btn btn-outline">Dashboard</a>
+                    <button class="btn btn-primary" onclick="logout()">Logout</button>
+                `
+            } else {
+                navLinks.innerHTML = `
+                    <a href="/auth" class="btn btn-outline">Login</a>
+                    <a href="/auth" class="btn btn-primary">Get Started</a>
+                `
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token')
+            window.location.href = '/'
+        }
+
+        async function loadPosts() {
+            const grid = document.getElementById('posts-grid')
+            grid.innerHTML = '<p class="loading">Loading posts...</p>'
+
+            try {
+                const res = await fetch(`/api/v1/blog/posts?page=${currentPage}&limit=${limit}`)
+                const data = await res.json()
+
+                if (data.results.length === 0) {
+                    grid.innerHTML = '<p class="no-posts">No posts yet. Be the first to write!</p>'
+                    document.getElementById('pagination').classList.add('hidden')
+                    return
+                }
+
+                grid.innerHTML = data.results.map(post => `
+                    <div class="post-card">
+                        <div class="post-card-body">
+                            <p class="post-author">✍️ ${post.author.username}</p>
+                            <h2 class="post-title">${post.title}</h2>
+                            <p class="post-preview">${post.content.substring(0, 150)}${post.content.length > 150 ? '...' : ''}</p>
+                        </div>
+                        <div class="post-card-footer">
+                            <span class="post-likes">❤️ ${post.like_count}</span>
+                            <span class="post-date">${new Date(post.created_at).toLocaleDateString()}</span>
+                            <a href="/post/${post.id}" class="btn btn-outline btn-sm">Read More</a>
+                        </div>
+                    </div>
+                `).join('')
+
+                // pagination
+                const totalPages = Math.ceil(data.total / limit)
+                document.getElementById('page-info').textContent = `Page ${currentPage} of ${totalPages}`
+                document.getElementById('prev-btn').disabled = currentPage === 1
+                document.getElementById('next-btn').disabled = currentPage === totalPages
+
+            } catch (err) {
+                grid.innerHTML = '<p class="no-posts">Failed to load posts.</p>'
+            }
+        }
+
+        function changePage(direction) {
+            currentPage += direction
+            loadPosts()
+            window.scrollTo(0, 0)
+        }
+
+        setupNav()
+        loadPosts()
+    </script>
+
+</body>
+</html>

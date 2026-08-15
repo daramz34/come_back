@@ -1,0 +1,263 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0f0f0f;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 2.5rem;
+    background-color: #1a1a1a;
+    border-bottom: 1px solid #2a2a2a;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #6c63ff;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.btn {
+    padding: 0.5rem 1.2rem;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid #6c63ff;
+    color: #6c63ff;
+}
+
+.btn-outline:hover {
+    background: #6c63ff;
+    color: white;
+}
+
+.btn-primary {
+    background: #6c63ff;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #5a52d5;
+}
+
+.btn-danger {
+    background: #ff6b6b;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #e05555;
+}
+
+.hidden {
+    display: none;
+}
+
+.error-msg {
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    min-height: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+    color: #888888;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: #0f0f0f;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    color: #e0e0e0;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #6c63ff;
+}
+
+.full-width {
+    width: 100%;
+    padding: 0.85rem;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+}
+
+
+
+
+/* =========================
+   RESPONSIVE DESIGN
+   ========================= */
+
+@media (max-width: 768px) {
+
+    /* NAVBAR */
+    nav {
+        width: 100%;
+        padding: 1rem 1.2rem;
+    }
+
+    .nav-logo {
+        font-size: 1.3rem;
+    }
+
+    .nav-links {
+        gap: 0.5rem;
+    }
+
+    .btn {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.85rem;
+    }
+
+
+    /* HERO */
+    .hero {
+        width: 100%;
+        min-height: auto;
+        padding: 5rem 1.5rem;
+    }
+
+    .hero h1 {
+        font-size: 2.8rem;
+        line-height: 1.15;
+    }
+
+    .hero p {
+        font-size: 1rem;
+        max-width: 500px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .hero-buttons .btn {
+        width: 100%;
+    }
+
+
+    /* FEATURES */
+    .features {
+        padding: 4rem 1.5rem;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+
+    /* BLOG FEED */
+    .feed-section {
+        width: 100%;
+        padding: 2rem 1.2rem;
+    }
+
+    .posts-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+
+    /* DASHBOARD */
+    .dashboard-section {
+        width: 100%;
+        padding: 2rem 1.2rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .post-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .post-row-actions {
+        width: 100%;
+    }
+
+
+    /* CREATE POST */
+    .create-section {
+        width: 100%;
+        padding: 2rem 1.2rem;
+    }
+
+    .create-container {
+        padding: 1.5rem;
+    }
+
+
+    /* SINGLE POST */
+    .post-section {
+        width: 100%;
+        padding: 2rem 1.2rem;
+    }
+
+    .post-title {
+        font-size: 1.8rem;
+    }
+
+    .post-meta {
+        flex-wrap: wrap;
+        gap: 0.7rem;
+    }
+
+
+    /* AUTH */
+    .auth-section {
+        width: 100%;
+        padding: 1.5rem;
+    }
+
+    .auth-card {
+        padding: 1.5rem;
+    }
+}

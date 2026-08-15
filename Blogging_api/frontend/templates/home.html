@@ -3,9 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D BLOG</title>
+    <title>D Blog</title>
+    <link rel="stylesheet" href="/static/base.css">
+    <link rel="stylesheet" href="/static/landing.css">
+
 </head>
 <body>
-    <h1>WELCOME</h1>
+
+    
+    <nav>
+        <a href="/" class="nav-logo">♟ D Blog </a>
+        <div class="nav-links">
+            <a href="/feed" class="btn btn-outline">Explore</a>
+            <a href="/auth" class="btn btn-primary">Get Started</a>
+        </div>
+    </nav>
+
+    
+    <section class="hero">
+        <h1>Share Your Ideas<br><span>With The World</span></h1>
+        <p>A place to write, read, and connect with thinkers. Start your blog today — no experience needed.</p>
+        <div class="hero-buttons">
+            <a href="/auth" class="btn btn-primary">Start Writing</a>
+            <a href="/feed" class="btn btn-outline">Explore Posts</a>
+        </div>
+    </section>
+
+    
+    <section class="features">
+        <h2>Everything You Need</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="icon">✍️</div>
+                <h3>Write</h3>
+                <p>Create and publish posts with ease. Draft, edit, and share your thoughts whenever you're ready.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📖</div>
+                <h3>Read</h3>
+                <p>Discover posts from writers around the world. Find ideas that inspire and challenge you.</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">❤️</div>
+                <h3>Connect</h3>
+                <p>Like posts and leave comments. Join conversations and build connections with other thinkers.</p>
+            </div>
+        </div>
+    </section>
+
+    
+    <footer>
+        <p>&copy; 2026 D Blog. Built with FastAPI.</p>
+    </footer>
+
 </body>
 </html>

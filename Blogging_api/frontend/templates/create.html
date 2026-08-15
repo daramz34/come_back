@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D Blog — Create Post</title>
+    <link rel="stylesheet" href="/static/base.css">
+    <link rel="stylesheet" href="/static/create.css">
+</head>
+<body>
+
+    
+    <nav>
+        <a href="/" class="nav-logo">♟ D Blog</a>
+        <div class="nav-links">
+            <a href="/feed" class="btn btn-outline">Feed</a>
+            <a href="/dashboard" class="btn btn-outline">Dashboard</a>
+            <button class="btn btn-primary" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    
+    <section class="create-section">
+        <div class="create-container">
+            <div class="create-header">
+                <h1>Write a Post</h1>
+                <p class="create-sub">Share your ideas with the world</p>
+            </div>
+
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="post-title" placeholder="Give your post a title">
+            </div>
+
+            <div class="form-group">
+                <label>Content</label>
+                <textarea id="post-content" rows="12" placeholder="Write your post here..."></textarea>
+            </div>
+
+            <p class="error-msg" id="post-error"></p>
+
+            <div class="create-actions">
+                <button class="btn btn-outline" onclick="saveDraft()">Save Draft</button>
+                <button class="btn btn-primary" onclick="publishPost()">Publish</button>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const token = localStorage.getItem('token')
+
+       
+        if (!token) {
+            window.location.href = '/auth'
+        }
+
+        function logout() {
+            localStorage.removeItem('token')
+            window.location.href = '/'
+        }
+
+        async function createPost(publish = false) {
+            const title = document.getElementById('post-title').value
+            const content = document.getElementById('post-content').value
+            const errorEl = document.getElementById('post-error')
+
+            if (!title || !content) {
+                errorEl.textContent = 'Title and content are required'
+                return
+            }
+
+            try {
+                const res = await fetch('/api/v1/blog/posts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ title, content })
+                })
+                const data = await res.json()
+
+                if (!res.ok) {
+                    errorEl.textContent = 'Failed to create post'
+                    return
+                }
+
+                
+                if (publish) {
+                    await fetch(`/api/v1/blog/posts/${data.id}`, {
+                        method: 'PATCH',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    })
+                    window.location.href = `/post/${data.id}`
+                } else {
+                    window.location.href = '/dashboard'
+                }
+
+            } catch (err) {
+                document.getElementById('post-error').textContent = 'Something went wrong'
+            }
+        }
+
+        function saveDraft() {
+            createPost(false)
+        }
+
+        function publishPost() {
+            createPost(true)
+        }
+    </script>
+
+</body>
+</html>

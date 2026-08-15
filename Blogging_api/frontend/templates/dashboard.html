@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D Blog — Dashboard</title>
+    <link rel="stylesheet" href="/static/base.css">
+    <link rel="stylesheet" href="/static/dashboard.css">
+</head>
+<body>
+
+    
+    <nav>
+        <a href="/" class="nav-logo">♟ D Blog</a>
+        <div class="nav-links">
+            <a href="/feed" class="btn btn-outline">Feed</a>
+            <a href="/create" class="btn btn-primary">New Post</a>
+            <button class="btn btn-outline" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+  
+    <section class="dashboard-section">
+
+        
+        <div class="stats-grid" id="stats-grid">
+            <div class="stat-card">
+                <p class="stat-label">Total Posts</p>
+                <h2 class="stat-value" id="total-posts">—</h2>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Published</p>
+                <h2 class="stat-value" id="total-published">—</h2>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Drafts</p>
+                <h2 class="stat-value" id="total-drafts">—</h2>
+            </div>
+            <div class="stat-card">
+                <p class="stat-label">Total Likes</p>
+                <h2 class="stat-value" id="total-likes">—</h2>
+            </div>
+        </div>
+
+        <!-- MY POSTS -->
+        <div class="my-posts">
+            <h2>My Posts</h2>
+            <div id="my-posts-list">
+                <p class="loading">Loading your posts...</p>
+            </div>
+        </div>
+
+    </section>
+
+    <script>
+        const token = localStorage.getItem('token')
+
+        if (!token) {
+            window.location.href = '/auth'
+        }
+
+        function logout() {
+            localStorage.removeItem('token')
+            window.location.href = '/'
+        }
+
+        async function loadMyPosts() {
+            try {
+                const res = await fetch('/api/v1/blog/posts/mine?page=1&limit=100', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                })
+                const data = await res.json()
+
+                if (!res.ok) {
+                    window.location.href = '/auth'
+                    return
+                }
+
+                const posts = data.results
+                const published = posts.filter(p => p.is_published)
+                const drafts = posts.filter(p => !p.is_published)
+                const totalLikes = posts.reduce((sum, p) => sum + p.like_count, 0)
+
+                
+                document.getElementById('total-posts').textContent = posts.length
+                document.getElementById('total-published').textContent = published.length
+                document.getElementById('total-drafts').textContent = drafts.length
+                document.getElementById('total-likes').textContent = totalLikes
+
+                const list = document.getElementById('my-posts-list')
+
+                if (posts.length === 0) {
+                    list.innerHTML = '<p class="no-posts">You have no posts yet. <a href="/create">Write one!</a></p>'
+                    return
+                }
+
+                list.innerHTML = posts.map(post => `
+                    <div class="post-row">
+                        <div class="post-row-info">
+                            <span class="post-status ${post.is_published ? 'published' : 'draft'}">
+                                ${post.is_published ? 'Published' : 'Draft'}
+                            </span>
+                            <h3 class="post-row-title">${post.title}</h3>
+                            <p class="post-row-meta">
+                                ❤️ ${post.like_count} likes · 
+                                ${new Date(post.created_at).toLocaleDateString()}
+                            </p>
+                        </div>
+                        <div class="post-row-actions">
+                            ${!post.is_published ? `
+                                <button class="btn btn-outline btn-sm" onclick="publishPost(${post.id})">Publish</button>
+                            ` : `
+                                <a href="/post/${post.id}" class="btn btn-outline btn-sm">View</a>
+                            `}
+                            <a href="/edit/${post.id}" class="btn btn-outline btn-sm">Edit</a>
+                            <button class="btn btn-danger btn-sm" onclick="deletePost(${post.id})">Delete</button>
+                        </div>
+                    </div>
+                `).join('')
+
+            } catch (err) {
+                document.getElementById('my-posts-list').innerHTML = '<p class="no-posts">Failed to load posts.</p>'
+            }
+        }
+
+        async function publishPost(postId) {
+            try {
+                const res = await fetch(`/api/v1/blog/posts/${postId}`, {
+                    method: 'PATCH',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                })
+                if (res.ok) {
+                    loadMyPosts()
+                }
+            } catch (err) {
+                alert('Failed to publish post')
+            }
+        }
+
+        async function deletePost(postId) {
+            if (!confirm('Are you sure you want to delete this post?')) return
+
+            try {
+                const res = await fetch(`/api/v1/blog/posts/${postId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                })
+                if (res.ok) {
+                    loadMyPosts()
+                }
+            } catch (err) {
+                alert('Failed to delete post')
+            }
+        }
+
+        loadMyPosts()
+    </script>
+
+</body>
+</html>

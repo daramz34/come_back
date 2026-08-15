@@ -1,0 +1,101 @@
+.dashboard-section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+}
+
+
+
+.stat-card {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+}
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-label {
+    color: #888888;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #6c63ff;
+}
+
+.my-posts h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.post-row {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s ease;
+}
+
+.post-row:hover {
+    border-color: #6c63ff;
+}
+
+.post-status {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    display: inline-block;
+}
+
+.post-status.published {
+    background: #1a3a1a;
+    color: #4caf50;
+}
+
+.post-status.draft {
+    background: #3a2a1a;
+    color: #ff9800;
+}
+
+.post-row-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0.3rem 0;
+}
+
+.post-row-meta {
+    font-size: 0.85rem;
+    color: #888888;
+}
+
+.post-row-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.no-posts {
+    color: #888888;
+    text-align: center;
+    padding: 3rem;
+}
+
+.no-posts a {
+    color: #6c63ff;
+    text-decoration: none;
+}

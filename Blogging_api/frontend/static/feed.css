@@ -1,0 +1,118 @@
+/* FEED */
+.feed-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+}
+
+.feed-header {
+    margin-bottom: 2.5rem;
+}
+
+.feed-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.feed-sub {
+    color: #888888;
+    margin-top: 0.4rem;
+}
+
+
+
+.post-card {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: border-color 0.2s ease;
+}
+
+.post-card:hover {
+    border-color: #6c63ff;
+}
+
+.post-author {
+    font-size: 0.85rem;
+    color: #888888;
+    margin-bottom: 0.6rem;
+}
+
+.post-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 0.8rem;
+    color: #e0e0e0;
+}
+
+.post-preview {
+    font-size: 0.9rem;
+    color: #888888;
+    line-height: 1.6;
+    margin-bottom: 1.2rem;
+}
+
+.post-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid #2a2a2a;
+    padding-top: 1rem;
+}
+
+.post-likes {
+    font-size: 0.9rem;
+    color: #888888;
+}
+
+.post-date {
+    font-size: 0.8rem;
+    color: #555555;
+}
+
+.btn-sm {
+    padding: 0.3rem 0.8rem;
+    font-size: 0.85rem;
+}
+
+/* PAGINATION */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+#page-info {
+    color: #888888;
+    font-size: 0.95rem;
+}
+
+.pagination button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+.loading {
+    color: #888888;
+    text-align: center;
+    padding: 3rem;
+    grid-column: 1 / -1;
+}
+
+.no-posts {
+    color: #888888;
+    text-align: center;
+    padding: 3rem;
+    grid-column: 1 / -1;
+}

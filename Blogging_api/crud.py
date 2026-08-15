@@ -36,26 +36,28 @@ def create_post(db: Session, post: PostCreate, current_user: User):
     db.refresh(db_post)
     return db_post
 
-def get_all_posts(db:Session, page: int=1, limit: int=10):
-    cache_key = f"all_posts:page={page}:limit={limit}"
+def get_all_posts(db: Session, page: int = 1, limit: int = 10):
+    cache_key = f"posts_total:page={page}:limit={limit}"
 
-    cached = get_cache(cache_key)
-    if cached:
-        return cached
-    offset = (page -1) * limit
+    cached_total = get_cache(cache_key)
+    
+    offset = (page - 1) * limit
     query = db.query(Post).filter(Post.is_published == True)
 
-    total = query.count()
+    
+    total = cached_total if cached_total else query.count()
+    
+    if not cached_total:
+        set_cache(cache_key, total, expire=60)
+
     posts = query.offset(offset).limit(limit).all()
 
-    result = {
-        "total":total,
+    return {
+        "total": total,
         "page": page,
         "limit": limit,
         "results": posts
     }
-    set_cache(cache_key, {"total": total, "page": page, "limit": limit}, expire=60)
-    return result
 
 
 def get_post_by_id(db: Session, post_id: int):

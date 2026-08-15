@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D Blog — Post</title>
+    <link rel="stylesheet" href="/static/base.css">
+    <link rel="stylesheet" href="/static/post.css">
+</head>
+<body>
+
+    
+    <nav>
+        <a href="/" class="nav-logo">♟ D Blog</a>
+        <div class="nav-links" id="nav-links"></div>
+    </nav>
+
+
+    <section class="post-section">
+        <div class="post-container" id="post-container">
+            <p class="loading">Loading post...</p>
+        </div>
+
+        
+        <div class="comments-section" id="comments-section">
+            <h3>Comments</h3>
+
+           
+            <div class="comment-form" id="comment-form">
+                <div class="form-group">
+                    <textarea id="comment-input" rows="3" placeholder="Share your thoughts..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="submitComment()">Post Comment</button>
+                <p class="error-msg" id="comment-error"></p>
+            </div>
+
+            <div id="comments-list">
+                <p class="loading">Loading comments...</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const postId = window.location.pathname.split('/').pop()
+        const token = localStorage.getItem('token')
+
+        // setup navbar
+        function setupNav() {
+            const navLinks = document.getElementById('nav-links')
+            if (token) {
+                navLinks.innerHTML = `
+                    <a href="/create" class="btn btn-outline">New Post</a>
+                    <a href="/dashboard" class="btn btn-outline">Dashboard</a>
+                    <button class="btn btn-primary" onclick="logout()">Logout</button>
+                `
+            } else {
+                navLinks.innerHTML = `
+                    <a href="/auth" class="btn btn-outline">Login</a>
+                    <a href="/auth" class="btn btn-primary">Get Started</a>
+                `
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token')
+            window.location.href = '/'
+        }
+
+        async function loadPost() {
+            try {
+                const res = await fetch(`/api/v1/blog/posts/${postId}`)
+                const post = await res.json()
+
+                if (!res.ok) {
+                    document.getElementById('post-container').innerHTML = '<p class="no-posts">Post not found.</p>'
+                    return
+                }
+
+                document.title = `${post.title} — D Blog`
+
+                document.getElementById('post-container').innerHTML = `
+                    <div class="post-header">
+                        <h1 class="post-title">${post.title}</h1>
+                        <div class="post-meta">
+                            <span>✍️ ${post.author.username}</span>
+                            <span>${new Date(post.created_at).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                    <div class="post-body">
+                        <p>${post.content}</p>
+                    </div>
+                    <div class="post-actions">
+                        <button class="btn btn-outline like-btn" onclick="likePost()">
+                            ❤️ <span id="like-count">${post.like_count}</span> Likes
+                        </button>
+                        <a href="/feed" class="btn btn-outline">← Back to Feed</a>
+                    </div>
+                `
+            } catch (err) {
+                document.getElementById('post-container').innerHTML = '<p class="no-posts">Failed to load post.</p>'
+            }
+        }
+
+        async function likePost() {
+            if (!token) {
+                window.location.href = '/auth'
+                return
+            }
+
+            try {
+                const res = await fetch(`/api/v1/blog/likes/${postId}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                })
+                const data = await res.json()
+
+                if (res.status === 400) {
+                    alert('You already liked this post')
+                    return
+                }
+
+                
+                const likeCount = document.getElementById('like-count')
+                likeCount.textContent = parseInt(likeCount.textContent) + 1
+
+            } catch (err) {
+                alert('Failed to like post')
+            }
+        }
+
+        async function loadComments() {
+            try {
+                const res = await fetch(`/api/v1/blog/posts/${postId}/comments`)
+                const comments = await res.json()
+
+                const list = document.getElementById('comments-list')
+
+                if (comments.length === 0) {
+                    list.innerHTML = '<p class="no-comments">No comments yet. Be the first!</p>'
+                    return
+                }
+
+                list.innerHTML = comments.map(c => `
+                    <div class="comment-card">
+                        <div class="comment-header">
+                            <span class="comment-author">✍️ ${c.author.username}</span>
+                            <span class="comment-date">${new Date(c.created_at).toLocaleDateString()}</span>
+                        </div>
+                        <p class="comment-body">${c.content}</p>
+                    </div>
+                `).join('')
+
+            } catch (err) {
+                document.getElementById('comments-list').innerHTML = '<p class="no-comments">Failed to load comments.</p>'
+            }
+        }
+
+        async function submitComment() {
+            if (!token) {
+                window.location.href = '/auth'
+                return
+            }
+
+            const content = document.getElementById('comment-input').value
+            const errorEl = document.getElementById('comment-error')
+
+            if (!content) {
+                errorEl.textContent = 'Comment cannot be empty'
+                return
+            }
+
+            try {
+                const res = await fetch(`/api/v1/blog/comments/${postId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ content })
+                })
+
+                if (!res.ok) {
+                    errorEl.textContent = 'Failed to post comment'
+                    return
+                }
+
+                document.getElementById('comment-input').value = ''
+                errorEl.textContent = ''
+                loadComments()
+
+            } catch (err) {
+                errorEl.textContent = 'Something went wrong'
+            }
+        }
+
+        setupNav()
+        loadPost()
+        loadComments()
+    </script>
+
+</body>
+</html>

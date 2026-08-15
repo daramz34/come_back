@@ -14,7 +14,7 @@ def get_cache(key: str):
         return json.loads(data)
     return None
 
-def set_cache(key: str, value: dict, expire: int = 60):
+def set_cache(key: str, value, expire: int = 60):
     redis_client.setex(key, expire, json.dumps(value, default=serialize))
 
 def delete_cache(key: str):
