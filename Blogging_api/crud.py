@@ -145,7 +145,7 @@ def get_my_post(db: Session, current_user: User, page: int =1, limit: int = 10):
         "page": page,
         "limit": limit,
         "results": posts
-    }
+    } 
 
 def get_post_comments(db: Session, post_id: int):
     return db.query(Comment).filter(Comment.post_id == post_id).all()

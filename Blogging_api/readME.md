@@ -1,6 +1,6 @@
 # Blogging API
 
-A production-structured REST API built with FastAPI, PostgreSQL, and Redis caching.
+A production-structured REST API built with FastAPI, PostgreSQL, Redis caching, and Cloudinary image uploads — with a fully functional HTML/CSS/JS frontend.
 
 ## Features
 
@@ -9,8 +9,10 @@ A production-structured REST API built with FastAPI, PostgreSQL, and Redis cachi
 - Comments and likes system
 - Pagination and filtering
 - Redis caching for public endpoints
+- Cloudinary image uploads for post cover images
 - Security headers middleware
 - CORS configuration
+- Responsive frontend (no framework)
 
 ## Tech Stack
 
@@ -18,8 +20,10 @@ A production-structured REST API built with FastAPI, PostgreSQL, and Redis cachi
 - **Database:** PostgreSQL + SQLAlchemy
 - **Auth:** JWT (python-jose)
 - **Caching:** Redis
+- **Image Storage:** Cloudinary
 - **Validation:** Pydantic v2
 - **Password Hashing:** Bcrypt
+- **Frontend:** HTML, CSS, JavaScript
 
 ## Project Structure
 Blogging_api/
@@ -32,12 +36,33 @@ Blogging_api/
 │ ├── config.py
 │ ├── security.py
 │ ├── dependencies.py
-│ └── cache.py
+│ ├── cache.py
+│ └── cloudinary.py
 ├── api/v1/
 │ ├── router.py
 │ └── endpoints/
 │ ├── auth.py
 │ └── blog.py
+├── frontend/
+│ ├── templates/
+│ │ ├── index.html
+│ │ ├── auth.html
+│ │ ├── feed.html
+│ │ ├── post.html
+│ │ ├── create.html
+│ │ ├── edit.html
+│ │ └── dashboard.html
+│ └── static/
+│ ├── css/
+│ │ ├── base.css
+│ │ ├── landing.css
+│ │ ├── auth.css
+│ │ ├── feed.css
+│ │ ├── post.css
+│ │ ├── create.css
+│ │ └── dashboard.css
+│ └── js/
+│ └── api.js
 └── .env
 
 ## Setup
@@ -66,6 +91,9 @@ SECRET_KEY=your-secret-key
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 REDIS_URL=redis://localhost:6379
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
 ```
 
 ### 5. Run Redis server
@@ -77,6 +105,9 @@ redis-server
 ```bash
 uvicorn Blogging_api.main:app --reload
 ```
+
+### 7. Visit the app
+http://localhost:8000
 
 ## API Endpoints
 
@@ -96,6 +127,7 @@ uvicorn Blogging_api.main:app --reload
 | PUT | `/api/v1/blog/posts/{id}` | Update post | Yes |
 | PATCH | `/api/v1/blog/posts/{id}` | Publish post | Yes |
 | DELETE | `/api/v1/blog/posts/{id}` | Delete post | Yes |
+| POST | `/api/v1/blog/posts/{id}/image` | Upload cover image | Yes |
 
 ### Comments
 | Method | Endpoint | Description | Auth |
@@ -107,6 +139,18 @@ uvicorn Blogging_api.main:app --reload
 | Method | Endpoint | Description | Auth |
 |---|---|---|---|
 | POST | `/api/v1/blog/likes/{post_id}` | Like a post | Yes |
+
+## Frontend Pages
+
+| Page | URL | Auth Required |
+|---|---|---|
+| Landing | `/` | No |
+| Auth | `/auth` | No |
+| Feed | `/feed` | No |
+| Post View | `/post/{id}` | No |
+| Create Post | `/create` | Yes |
+| Edit Post | `/edit/{id}` | Yes |
+| Dashboard | `/dashboard` | Yes |
 
 ## Interactive Docs
 

@@ -116,3 +116,12 @@
     padding: 3rem;
     grid-column: 1 / -1;
 }
+
+.post-card-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+    margin: -1.5rem -1.5rem 1rem -1.5rem;
+    width: calc(100% + 3rem);
+}

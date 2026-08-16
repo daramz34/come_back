@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D Blog — Create Post</title>
+    <link rel="icon" type="image/png" href="/static/images/pawn2.png">
     <link rel="stylesheet" href="/static/base.css">
     <link rel="stylesheet" href="/static/create.css">
+    <script src="/static/js/api.js"></script>
 </head>
 <body>
 
@@ -37,6 +39,11 @@
                 <textarea id="post-content" rows="12" placeholder="Write your post here..."></textarea>
             </div>
 
+            <div class="form-group">
+                <label>Cover Image <span style="color:#888; font-size:0.85rem">(optional)</span></label>
+                <input type="file" id="post-image" accept="image/*">
+            </div>
+
             <p class="error-msg" id="post-error"></p>
 
             <div class="create-actions">
@@ -62,6 +69,7 @@
         async function createPost(publish = false) {
             const title = document.getElementById('post-title').value
             const content = document.getElementById('post-content').value
+            const imageFile = document.getElementById('post-image').files[0]
             const errorEl = document.getElementById('post-error')
 
             if (!title || !content) {
@@ -70,19 +78,25 @@
             }
 
             try {
-                const res = await fetch('/api/v1/blog/posts', {
+                const res = await authFetch('/api/v1/blog/posts', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ title, content })
                 })
+                if (!res) return
                 const data = await res.json()
 
                 if (!res.ok) {
                     errorEl.textContent = 'Failed to create post'
                     return
+                }
+                 if (imageFile) {
+                    const formData = new FormData()
+                    formData.append('file', imageFile)
+                    await authFetch(`/api/v1/blog/posts/${data.id}/image`, {
+                        method: 'POST',
+                        body: formData
+                    })
                 }
 
                 

@@ -31,6 +31,7 @@ class PostResponse(BaseModel):
     content: str
     is_published: bool
     like_count: int = 0
+    image_url: str | None = None
     created_at: datetime
     updated_at: datetime
     author: UserResponse   # FULL author details not just ID

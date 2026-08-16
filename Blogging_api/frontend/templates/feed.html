@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D Blog — Feed</title>
+    <link rel="icon" type="image/png" href="/static/images/pawn2.png">
     <link rel="stylesheet" href="/static/base.css">
     <link rel="stylesheet" href="/static/feed.css">
+    <script src="/static/js/api.js"></script>
 </head>
 <body>
 
@@ -80,6 +82,9 @@
 
                 grid.innerHTML = data.results.map(post => `
                     <div class="post-card">
+                        ${post.image_url ? `
+                            <img src="${post.image_url}" class="post-card-image" alt="${post.title}">
+                                ` : ''}
                         <div class="post-card-body">
                             <p class="post-author">✍️ ${post.author.username}</p>
                             <h2 class="post-title">${post.title}</h2>

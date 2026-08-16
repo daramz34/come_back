@@ -2,6 +2,7 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 3rem 2rem;
+    overflow: hidden;
 }
 
 .post-container {
@@ -34,6 +35,15 @@
     color: #c0c0c0;
     margin-bottom: 2rem;
     white-space: pre-wrap;
+    
+}
+.post-body img {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    display: block;
+    margin: 1.5rem auto;
+    border-radius: 10px;
 }
 
 .post-actions {
@@ -49,7 +59,14 @@
     align-items: center;
     gap: 0.4rem;
 }
-
+.post-hero-image {
+    width: 600px !important;
+    height: 300px !important;
+    max-width: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    margin: 0 auto 2rem !important;
+}
 /* COMMENTS */
 .comments-section {
     border-top: 1px solid #2a2a2a;

@@ -4,9 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>D Blog</title>
+    <link rel="icon" type="image/png" href="/static/images/pawn2.png">
     <link rel="stylesheet" href="/static/base.css">
     <link rel="stylesheet" href="/static/landing.css">
 
+    <script>
+    const token = localStorage.getItem('token')
+    const navLinks = document.getElementById('nav-links')
+
+    if (token) {
+        navLinks.innerHTML = `
+            <a href="/feed" class="btn btn-outline">Feed</a>
+            <a href="/dashboard" class="btn btn-outline">Dashboard</a>
+            <button class="btn btn-primary" onclick="logout()">Logout</button>
+        `
+    } else {
+        navLinks.innerHTML = `
+            <a href="/feed" class="btn btn-outline">Explore</a>
+            <a href="/auth" class="btn btn-primary">Get Started</a>
+        `
+    }
+
+    function logout() {
+        localStorage.removeItem('token')
+        window.location.reload()
+    }
+</script>
 </head>
 <body>
 

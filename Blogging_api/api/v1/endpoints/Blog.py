@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, Query, status, Depends
+from fastapi import APIRouter, HTTPException, Query, status, Depends, UploadFile, File
+from Blogging_api.core.cloudinary import upload_image
 from Blogging_api.database import get_db
 from Blogging_api.core.dependencies import get_current_user
 from Blogging_api.schemas import (
@@ -39,6 +40,21 @@ def get_postid(post_id: int, db: Session = Depends(get_db)):
                             detail= "Post not found")
     return post
 
+@router.post("/posts/{post_id}/image", response_model=PostResponse, status_code=status.HTTP_200_OK, description="Upload post image")
+def upload_post_image(post_id: int, file: UploadFile = File(...), db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    post = get_post_by_id(db, post_id)
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Post not found")
+
+    if post.author_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
+
+    image_url = upload_image(file.file)
+
+    post.image_url = image_url
+    db.commit()
+    db.refresh(post)
+    return post
 
 @router.put("/posts/{post_id}", response_model=PostResponse, status_code=status.HTTP_200_OK, description="Update post")
 def update_post(post_id: int, update: PostUpdate, db: Session= Depends(get_db), current_user: User= Depends(get_current_user)):
