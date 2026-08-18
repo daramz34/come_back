@@ -1,0 +1,63 @@
+User
+├── id
+├── username (unique)
+├── email (unique)
+├── hashed_password
+├── created_at
+
+Recipe (saved by user)
+├── id
+├── user_id (FK → User)
+├── meal_name
+├── cuisine_type
+├── dietary_preference
+├── cooking_time
+├── ingredients (Text)
+├── steps (Text)
+├── tips (Text)
+├── rating (1-5, optional)
+├── is_favourite (bool, default False)
+├── created_at
+
+MealSuggestion (temporary — stores Gemini suggestions)
+├── id
+├── user_id (FK → User)
+├── suggestions (Text — JSON list of meal names)
+├── cuisine_type
+├── dietary_preference
+├── cooking_time
+├── created_at
+
+
+
+
+
+
+
+UserCreate     → username, email, password
+UserResponse   → id, username, email, created_at
+
+TokenResponse  → access_token, token_type
+
+MealRequest    → mood/craving, cuisine_type, dietary_preference, cooking_time
+MealSuggestionResponse → id, suggestions (list of meal names)
+
+RecipeRequest  → meal_name, suggestion_id (user picks from suggestions)
+RecipeResponse → id, meal_name, cuisine_type, dietary_preference, 
+                 cooking_time, ingredients, steps, tips, 
+                 rating, is_favourite, created_at
+
+RecipeUpdate   → rating, is_favourite (optional fields for updating)
+
+PaginatedRecipeResponse → total, page, limit, results: list[RecipeResponse]
+
+
+
+
+
+
+
+
+services/gemini.py
+├── suggest_meals()    → takes craving + filters → returns list of meal names
+└── generate_recipe()  → takes meal name + filters → returns full recipe dict
