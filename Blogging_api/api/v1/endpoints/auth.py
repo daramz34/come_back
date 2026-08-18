@@ -18,6 +18,12 @@ def register(user: UserCreate, db: Session=Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Username already taken"
         )
+    existing_email = db.query(User).filter(User.email == user.email).first()
+    if existing_email:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered"
+        )
     return create_user(db, user)
 
 @router.post("/login", response_model=TokenResponse, description="User Login")
