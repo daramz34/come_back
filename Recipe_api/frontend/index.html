@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Whisked helps you discover and save recipes made for your cravings.">
+  <title>Whisked | Recipe planner</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="discover">
+  <header class="site-header">
+    <a class="brand" href="#discover" aria-label="Whisked home">
+      <span class="brand-mark">✦</span>
+      <span>whisked</span>
+    </a>
+    <nav class="main-nav" aria-label="Main navigation">
+      <a href="index.html">Discover</a>
+      <a href="collections.html">My collection <span id="saved-count" class="count-badge">0</span></a>
+    </nav>
+    <div class="header-actions">
+      <span id="user-label" class="user-label"></span>
+      <button id="logout-button" class="button button-ghost hidden" type="button">Log out</button>
+      <a id="auth-button" class="button button-dark" href="auth.html">Sign in</a>
+      <button id="menu-button" class="menu-button" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="discover" class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">Your next favourite meal</p>
+        <h1>Cook something<br><em>worth sharing.</em></h1>
+        <p class="hero-text">Tell us what you’re craving and we’ll turn it into a recipe you’ll want to make again.</p>
+        <a class="button button-coral" href="#planner">Find my recipe <span>→</span></a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="sun"></div><div class="leaf leaf-one"></div><div class="leaf leaf-two"></div>
+        <div class="plate"><span>🥗</span></div>
+      </div>
+    </section>
+
+    <section id="planner" class="planner section-shell">
+      <div class="section-heading">
+        <div><p class="eyebrow">01 / Discover</p><h2>What are you in the mood for?</h2></div>
+        <p class="section-note">A little detail helps us make it just right.</p>
+      </div>
+      <form id="suggestion-form" class="planner-form">
+        <label class="field field-wide">Craving or ingredient
+          <input name="craving" required placeholder="e.g. something spicy with chicken">
+        </label>
+        <label class="field">Cuisine
+          <select name="cuisine_type"><option value="Any">Any cuisine</option><option>West African</option><option>Italian</option><option>Mexican</option><option>Asian</option><option>Mediterranean</option><option>American</option></select>
+        </label>
+        <label class="field">Diet
+          <select name="dietary_preference"><option value="No preference">No preference</option><option>Vegetarian</option><option>Vegan</option><option>Gluten-free</option><option>High-protein</option><option>Low-carb</option></select>
+        </label>
+        <label class="field">Time available
+          <select name="cooking_time"><option value="30 minutes">30 minutes</option><option>15 minutes</option><option>45 minutes</option><option>1 hour</option><option>2+ hours</option></select>
+        </label>
+        <button class="button button-dark submit-button" type="submit">Suggest meals <span>→</span></button>
+      </form>
+      <div id="suggestion-status" class="status" role="status"></div>
+      <div id="suggestions" class="suggestions-grid" aria-live="polite"></div>
+    </section>
+
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

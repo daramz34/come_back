@@ -20,7 +20,11 @@ class TokenResponse(BaseModel):
     token_type: str = "Bearer"
 
 
-
+class MealSuggestionCreate(BaseModel):
+    suggestions: list
+    cuisine_type: str
+    dietary_preference: str
+    cooking_time: str
 
 class MealRequest(BaseModel):
     craving: str
@@ -31,6 +35,10 @@ class MealRequest(BaseModel):
 class MealSuggestions(BaseModel):
     id: int
     suggestions: list
+    cuisine_type: str
+    dietary_preference: str
+    cooking_time: str
+    created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
 

@@ -25,6 +25,7 @@ class Recipe(Base):
     __tablename__ = "recipes"
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    suggestion_id = Column(Integer, ForeignKey("meal_suggestions.id"), nullable=False)
     meal_name = Column(String, nullable=False)
     cuisine_type = Column(String, nullable=False)
     dietary_preference = Column(String, nullable=False)
@@ -37,6 +38,7 @@ class Recipe(Base):
     created_at = Column(DateTime(timezone=True), default=utcnow, nullable=False)
 
     user = relationship("User", back_populates="recipes")
+    suggestions = relationship("MealSuggestion", back_populates="recipes")
     
     
 
@@ -52,5 +54,6 @@ class MealSuggestion(Base):
     created_at = Column(DateTime(timezone=True), default=utcnow, nullable=False)
 
     user = relationship("User", back_populates="suggestions")
+    recipes = relationship("Recipe", back_populates="suggestions")
 
         

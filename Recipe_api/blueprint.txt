@@ -61,3 +61,83 @@ PaginatedRecipeResponse → total, page, limit, results: list[RecipeResponse]
 services/gemini.py
 ├── suggest_meals()    → takes craving + filters → returns list of meal names
 └── generate_recipe()  → takes meal name + filters → returns full recipe dict
+
+
+
+AUTH:
+POST /auth/register     → register
+POST /auth/login        → login
+
+RECIPES:
+POST /recipes/suggest        → send mood → get list of meal suggestions
+POST /recipes/generate       → pick a meal → get full recipe
+GET  /recipes/history        → paginated list of your saved recipes
+GET  /recipes/{id}           → single recipe
+PATCH /recipes/{id}          → update rating or mark as favourite
+DELETE /recipes/{id}         → delete a saved recipe
+GET  /recipes/favourites     → all your favourited recipes
+
+
+USER:
+get_user_by_username(db, username) → User | None
+get_user_by_email(db, email) → User | None
+create_user(db, user: UserCreate) → User
+authenticate_user(db, username, password) → User | None
+
+MEAL SUGGESTION:
+create_suggestion(db, user_id, suggestions: list, cuisine_type, dietary_preference, cooking_time) → MealSuggestion
+get_suggestion_by_id(db, suggestion_id, user_id) → MealSuggestion | None
+
+RECIPE:
+create_recipe(db, user_id, recipe_data: dict, suggestion_id) → Recipe
+get_recipe_by_id(db, recipe_id, user_id) → Recipe | None
+get_all_recipes(db, user_id, page, limit) → dict (paginated)
+get_favourite_recipes(db, user_id) → list[Recipe]
+update_recipe(db, recipe_id, user_id, update: RecipeUpdate) → Recipe | None
+delete_recipe(db, recipe_id, user_id) → Recipe | None
+
+
+
+
+
+POST /recipes/suggest
+→ takes MealRequest (craving, cuisine_type, dietary_preference, cooking_time)
+→ calls gemini.suggest_meals()
+→ saves suggestions via crud.create_suggestion()
+→ returns MealSuggestions response
+
+POST /recipes/generate
+→ takes RecipeRequest (meal_name, suggestion_id)
+→ gets suggestion from DB via crud.get_suggestions_by_id()
+→ if not found → 404
+→ calls gemini.generate_recipe() using meal_name + suggestion filters
+→ saves recipe via crud.create_recipe()
+→ returns RecipeResponse
+
+GET /recipes/history
+→ paginated list of current user's recipes
+→ calls crud.get_all_recipe()
+→ returns PaginatedRecipeResponse
+
+GET /recipes/favourites
+→ all favourited recipes for current user
+→ calls crud.get_favourite_recipes()
+→ returns list[RecipeResponse]
+
+GET /recipes/{recipe_id}
+→ single recipe by ID
+→ calls crud.get_recipe_by_id()
+→ if not found → 404
+→ returns RecipeResponse
+
+PATCH /recipes/{recipe_id}
+→ update rating or is_favourite
+→ calls crud.update_recipe()
+→ if not found → 404
+→ returns RecipeResponse
+
+DELETE /recipes/{recipe_id}
+→ delete recipe
+→ calls crud.delete_recipe()
+→ if not found → 404
+→ returns 204 No Content
