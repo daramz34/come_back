@@ -1,0 +1,64 @@
+User
+├── id
+├── username (unique)
+├── email (unique)
+├── hashed_password
+├── created_at
+
+Medication
+├── id
+├── user_id (FK → User)
+├── name
+├── description
+├── dosage (e.g. "4 tablets")
+├── frequency (enum: once_daily, twice_daily, three_times_daily)
+├── duration_days (how many days the course lasts)
+├── start_date
+├── end_date (calculated: start_date + duration_days)
+├── status (enum: active, completed, abandoned)
+├── reminder_time (e.g. "08:00") 
+├── reminder_enabled (bool, default True)
+├── created_at
+
+MedicationLog
+├── id
+├── medication_id (FK → Medication)
+├── user_id (FK → User)
+├── date (the day this log is for)
+├── status (enum: taken, skipped, missed)
+├── taken_at (actual time user marked it taken, nullable)
+├── notes (optional)
+├── created_at
+
+Streak
+├── id
+├── user_id (FK → User)
+├── medication_id (FK → Medication)
+├── current_streak (int, default 0)
+├── longest_streak (int, default 0)
+├── total_taken (int, default 0)
+├── total_missed (int, default 0)
+├── total_skipped (int, default 0)
+├── completion_percentage (float, default 0.0)
+├── updated_at
+
+
+
+
+
+UserCreate     → username, email, password
+UserResponse   → id, username, email, created_at
+TokenResponse  → access_token, token_type
+
+MedicationCreate → name, description, dosage, frequency, 
+                   duration_days, start_date, reminder_time,
+                   reminder_enabled
+MedicationResponse → all fields including end_date, status
+MedicationUpdate → any field optional
+
+LogCreate  → medication_id, status, notes (optional)
+LogResponse → id, medication_id, date, status, taken_at, notes
+
+StreakResponse → medication_id, current_streak, longest_streak,
+                 total_taken, total_missed, total_skipped,
+                 completion_percentage
