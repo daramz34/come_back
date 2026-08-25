@@ -62,3 +62,34 @@ LogResponse → id, medication_id, date, status, taken_at, notes
 StreakResponse → medication_id, current_streak, longest_streak,
                  total_taken, total_missed, total_skipped,
                  completion_percentage
+
+
+
+
+
+USER:
+get_user_by_username(db, username) → User | None
+get_user_by_email(db, email) → User | None
+create_user(db, user: UserCreate) → User
+authenticate_user(db, username, password) → User | None
+
+MEDICATION:
+create_medication(db, medication: MedicationCreate, current_user: User) → Medication
+get_all_medications(db, current_user: User) → list[Medication]
+get_medication_by_id(db, medication_id, current_user: User) → Medication | None
+update_medication(db, medication_id, update: MedicationUpdate, current_user: User) → Medication | None
+delete_medication(db, medication_id, current_user: User) → Medication | None
+update_medication_status(db, medication_id, status, current_user: User) → Medication | None
+
+LOGS:
+create_log(db, log: LogCreate, current_user: User) → MedicationLog
+get_today_logs(db, current_user: User) → list[MedicationLog]
+get_medication_logs(db, medication_id, current_user: User) → list[MedicationLog]
+
+STREAK:
+get_or_create_streak(db, medication_id, user_id) → Streak
+update_streak(db, medication_id, user_id, log_status: LogStatus) → Streak
+
+HELPERS (internal functions, not endpoints):
+calculate_end_date(start_date, duration_days) → date
+calculate_completion_percentage(total_taken, duration_days) → float
