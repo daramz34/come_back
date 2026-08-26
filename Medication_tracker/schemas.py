@@ -63,7 +63,8 @@ class MedicatedUpdate(BaseModel):
     reminder_enabled: Optional[bool] = None
     status: Optional[MedicationStatus] = None
 
-
+class MedicationStatusUpdate(BaseModel):
+    status: MedicationStatus
 
 class LogCreate(BaseModel):
     medication_id: int

@@ -10,6 +10,11 @@ class Settings(BaseSettings):
     APP_NAME: str = "MEDICATION_TRACKER"
     VERSION: str = "1.0.0"
 
+
+    #mail
+    SENDER_EMAIL=str
+    GMAIL_PASSWORD=str
+
     model_config = SettingsConfigDict(env_file=Path(__file__).resolve().parent.parent / ".env")
 
 

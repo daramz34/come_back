@@ -93,3 +93,35 @@ update_streak(db, medication_id, user_id, log_status: LogStatus) → Streak
 HELPERS (internal functions, not endpoints):
 calculate_end_date(start_date, duration_days) → date
 calculate_completion_percentage(total_taken, duration_days) → float
+
+
+
+Two functions:
+
+send_reminder_email(user_email, username, medication_name, dosage, reminder_time)
+→ sends "time to take your medication" email
+→ called by scheduler every hour
+
+send_completion_email(user_email, username, medication_name)
+→ sends "you completed your medication course" email
+→ called when medication status changes to completed
+
+
+
+
+POST   /medications/              → create medication (201)
+GET    /medications/              → get all my medications (200)
+GET    /medications/{id}          → get single medication (200)
+PUT    /medications/{id}          → update medication (200)
+DELETE /medications/{id}          → delete medication (204)
+PATCH  /medications/{id}/status   → update medication status (200)
+
+POST /logs/                    → log medication intake (201)
+                               → returns 400 if already logged today
+                               → returns 404 if medication not found
+GET  /logs/today               → get today's logs (200)
+GET  /logs/{medication_id}     → get full log history for a medication (200)
+
+
+GET /streak/{medication_id}    → get streak stats for a medication (200)
+                               → returns 404 if streak not found
