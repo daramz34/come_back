@@ -2,11 +2,12 @@ from Medication_tracker.core.config import settings
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.utils import formataddr
 
 
 def send_reminder_email(user_email, username, medication_name, dosage, reminder_time):
     message = MIMEMultipart()
-    message["From"] = settings.SENDER_EMAIL
+    formataddr(("D-Med Tracker", settings.SENDER_EMAIL))
     message["To"] = user_email.strip()
     message["Subject"] = f"Medication Reminder — {medication_name}"
 
@@ -31,7 +32,7 @@ def send_reminder_email(user_email, username, medication_name, dosage, reminder_
 
 def send_completion_email(user_email, username, medication_name):
     message = MIMEMultipart()
-    message["From"] = settings.SENDER_EMAIL
+    formataddr(("D-Med Tracker", settings.SENDER_EMAIL))
     message["To"] = user_email.strip()
     message["Subject"] = f"Course Completed — {medication_name}"
 
@@ -57,7 +58,7 @@ def send_completion_email(user_email, username, medication_name):
 
 def send_welcome_email(user_email: str, username: str):
     message = MIMEMultipart()
-    message["From"] = settings.SENDER_EMAIL
+    message["From"] = formataddr(("D-Med Tracker", settings.SENDER_EMAIL))
     message["To"] = user_email.strip()
     message["Subject"] = "Welcome to D-Med Tracker 💊"
 
