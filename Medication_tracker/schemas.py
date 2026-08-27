@@ -76,7 +76,7 @@ class LogResponse(BaseModel):
     medication_id: int
     date: date_type
     status: LogStatus
-    taken_at: time
+    taken_at: Optional[time] = None
     notes: Optional[str] = None
     created_at: datetime
 

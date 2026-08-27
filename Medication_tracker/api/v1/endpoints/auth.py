@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from sqlalchemy.orm import Session
 from Medication_tracker.core.security import create_access_token
 from fastapi.security import OAuth2PasswordRequestForm
-
+from Medication_tracker.service.email import send_welcome_email
 router = APIRouter(prefix="/auth", tags=["AUTH"])
 
 @router.post("/register", response_model=UserResponse, description="Register")
@@ -19,7 +19,10 @@ def register(user: UserCreate, db:Session=Depends(get_db)):
             detail="Username or Email is already registered"
         )
 
-    return create_user(db, user)
+    db_user = create_user(db, user)
+    send_welcome_email(db_user.email, db_user.username)
+
+    return db_user
 
 
 @router.post("/login", response_model=TokenResponse, description="User Login")

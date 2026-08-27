@@ -18,6 +18,7 @@ router = APIRouter(prefix="/logs", tags=["MEDICATIONS_LOGS"])
 
 @router.post("/", response_model=LogResponse, status_code=status.HTTP_201_CREATED, description="Log medication intake")
 def log_intake(log: LogCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    
     result = create_log(db, log, current_user)
     
     if result is None:
@@ -40,8 +41,14 @@ def log_intake(log: LogCreate, db: Session = Depends(get_db), current_user: User
 def todays_logs(db:Session=Depends(get_db), current_user: User=Depends(get_current_user)):
     return get_today_logs(db, current_user)
 
-@router.get("/{med_id}", response_model=LogResponse, status_code=200, description="Get full log history")
+@router.get("/{med_id}", response_model=list[LogResponse], status_code=200, description="Get full log history")
 def med_logs(med_id: int, db:Session=Depends(get_db), current_user: User=Depends(get_current_user)):
+    med = get_medications_by_id(db, med_id, current_user)
+    if not med:
+        raise HTTPException(
+            status_code=404,
+            detail="Medication not found"
+        )
     logs = get_medication_logs(db, med_id, current_user)
     
     return logs

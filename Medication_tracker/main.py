@@ -1,28 +1,19 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
-from Medication_tracker.api.v1.router import router
+
+from Medication_tracker.api.v1.router import api_router
 from Medication_tracker.database import Base, engine
 from Medication_tracker.service.scheduler import start_scheduler
+from Medication_tracker.core.config import settings
 
 Base.metadata.create_all(bind=engine)
 
-
-limiter = Limiter(key_func=get_remote_address)
-
 app = FastAPI(
-    title="Medication Tracker API",
-    version="1.0.0",
+    title=settings.APP_NAME,
+    version=settings.VERSION,
     description="Track your medications, streaks, and get email reminders"
 )
-
-
-app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
-
 
 app.add_middleware(
     CORSMiddleware,
@@ -41,7 +32,7 @@ async def security_headers_middleware(request: Request, call_next):
 
 app.add_middleware(BaseHTTPMiddleware, dispatch=security_headers_middleware)
 
-app.include_router(router, prefix="/api/v1")
+app.include_router(api_router, prefix="/api/v1")
 
 @app.on_event("startup")
 def startup():

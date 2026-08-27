@@ -32,7 +32,7 @@ def get_meds_by_id(med_id: int, db: Session = Depends(get_db), current_user: Use
         raise HTTPException(status_code=404, detail="Medication not found")
     return med
 
-@router.put("/{med_id}", response_model=MedicatedResponse, status_code=status.HTTP_200_OK, description="Update meds")
+@router.patch("/{med_id}", response_model=MedicatedResponse, status_code=status.HTTP_200_OK, description="Update meds")
 def update_meds(med_id: int, update: MedicatedUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     db_update = update_medication(db, med_id, update, current_user)
     if not db_update:
@@ -52,7 +52,7 @@ def delete_meds(med_id: int, db: Session = Depends(get_db), current_user: User =
         )
     return 
 
-@router.patch("/{med_id}", response_model=MedicatedResponse, status_code=status.HTTP_200_OK, description="Update med status")
+@router.patch("/{med_id}/status", response_model=MedicatedResponse, status_code=status.HTTP_200_OK, description="Update med status")
 def update_med_status(med_id: int, update:MedicationStatusUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     db_update = update_medication_status(db, med_id, update.status, current_user)
     if not db_update:

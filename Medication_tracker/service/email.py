@@ -52,4 +52,39 @@ def send_completion_email(user_email, username, medication_name):
     except Exception as e:
         print(f"Failed to send email. Error: {e}")
     
-    
+
+
+
+def send_welcome_email(user_email: str, username: str):
+    message = MIMEMultipart()
+    message["From"] = settings.SENDER_EMAIL
+    message["To"] = user_email.strip()
+    message["Subject"] = "Welcome to D-Med Tracker 💊"
+
+    body_text = f"""Hi {username},
+
+        Welcome to D-Med Tracker!
+
+        You're all set to start tracking your medications and building healthy habits.
+
+        Here's what you can do:
+        - Add your medications and dosage schedule
+        - Log when you take them daily
+        - Track your streak and stay consistent
+        - Get email reminders so you never miss a dose
+
+        Stay consistent — your health depends on it!
+
+        D-Med Tracker
+        """
+    message.attach(MIMEText(body_text, "plain"))
+
+    try:
+        print("Connecting to SMTP server.....")
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
+            server.login(settings.SENDER_EMAIL, settings.GMAIL_PASSWORD)
+            server.sendmail(settings.SENDER_EMAIL, user_email, message.as_string())
+        print("Email sent successfully")
+    except Exception as e:
+        print(f"Failed to send email. Error: {e}")
