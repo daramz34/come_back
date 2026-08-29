@@ -1,8 +1,8 @@
-from error_project.database import SessionLocal
-from error_project.models import Item, User, Category  
-from error_project.schemas import CategoryResponse, CategoryCreate, ItemCreate, UserCreate
+from database import SessionLocal
+from models import Item, User, Category  
+from schemas import CategoryResponse, CategoryCreate, ItemCreate, UserCreate
 from sqlalchemy.orm import Session
-from error_project.security import hash_password
+from security import hash_password
 
 # --- USER CRUD OPERATIONS ---
 def create_user(db: Session, user_in: UserCreate):

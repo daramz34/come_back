@@ -1,16 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from Medication_tracker.database import get_db
-from Medication_tracker.models import User
-from Medication_tracker.schemas import ( MedicationStatusUpdate,
+from database import get_db
+from models import User
+from schemas import ( MedicationStatusUpdate,
     MedicatedUpdate, MedicatedResponse,MedicationCreate
 )
-from Medication_tracker.crud import (
+from crud import (
     delete_medication,
     create_medication,update_medication, update_medication_status, get_all_medications, get_medications_by_id
 )
 from sqlalchemy.orm import Session
-from Medication_tracker.enums import MedicationStatus
-from Medication_tracker.core.dependencies import get_current_user
+from enums import MedicationStatus
+from core.dependencies import get_current_user
 
 
 router = APIRouter(prefix="/medications", tags=["MEDICATIONS"])

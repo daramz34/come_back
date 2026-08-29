@@ -1,9 +1,9 @@
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from Medication_tracker.database import get_db
-from Medication_tracker.core.security import verify_access_token
-from Medication_tracker.models import User
+from database import get_db
+from core.security import verify_access_token
+from models import User
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 

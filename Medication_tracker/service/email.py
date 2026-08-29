@@ -1,4 +1,4 @@
-from Medication_tracker.core.config import settings
+from core.config import settings
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText

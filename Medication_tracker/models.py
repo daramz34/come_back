@@ -1,8 +1,8 @@
 from sqlalchemy import Column, String, Integer, Float,Date,Time,Text, Boolean,  Enum, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
-from Medication_tracker.database import Base
+from database import Base
 from datetime import datetime, timezone, date, time
-from Medication_tracker.enums import Frequency, LogStatus,MedicationStatus
+from enums import Frequency, LogStatus,MedicationStatus
 def utcnow():
     return datetime.now(timezone.utc)
 

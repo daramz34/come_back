@@ -1,9 +1,9 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from datetime import datetime, date
-from Medication_tracker.database import SessionLocal
-from Medication_tracker.models import Medication, User
-from Medication_tracker.enums import MedicationStatus
-from Medication_tracker.service.email import send_reminder_email, send_completion_email
+from database import SessionLocal
+from models import Medication, User
+from enums import MedicationStatus
+from service.email import send_reminder_email, send_completion_email
 
 scheduler = BackgroundScheduler()
 

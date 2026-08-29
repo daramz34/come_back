@@ -1,13 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from Medication_tracker.database import get_db
-from Medication_tracker.models import User
-from Medication_tracker.schemas import ( 
+from database import get_db
+from models import User
+from schemas import ( 
     StreakResponse
 )
-from Medication_tracker.crud import (
+from crud import (
     get_or_create_streak)
 from sqlalchemy.orm import Session
-from Medication_tracker.core.dependencies import get_current_user
+from core.dependencies import get_current_user
 
 
 

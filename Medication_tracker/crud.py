@@ -1,11 +1,11 @@
 from sqlalchemy.orm import Session
-from Medication_tracker.models import User, Medication, MedicationLog, Streak
-from Medication_tracker.enums import LogStatus,MedicationStatus
-from Medication_tracker.schemas import (LogCreate,MedicatedUpdate, 
+from models import User, Medication, MedicationLog, Streak
+from enums import LogStatus,MedicationStatus
+from schemas import (LogCreate,MedicatedUpdate, 
                                         UserCreate,MedicationCreate)
-from Medication_tracker.core.security import verify_password, hashed_password
+from core.security import verify_password, hashed_password
 from datetime import date, timedelta
-from Medication_tracker.models import utcnow
+from models import utcnow
 def get_user_username(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
 def get_user_emal(db:Session, email:str):

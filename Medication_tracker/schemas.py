@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr, ConfigDict, Field
 from typing import Optional
 from datetime import datetime, date as date_type, time
-from Medication_tracker.enums import LogStatus, MedicationStatus, Frequency
+from enums import LogStatus, MedicationStatus, Frequency
 
 
 class UserCreate(BaseModel):

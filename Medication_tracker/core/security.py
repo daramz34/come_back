@@ -2,7 +2,7 @@ from passlib.context import CryptContext
 from fastapi import HTTPException, status
 import jwt
 from datetime import datetime, timedelta, timezone
-from Medication_tracker.core.config import settings
+from core.config import settings
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

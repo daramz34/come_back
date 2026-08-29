@@ -1,11 +1,11 @@
-from Medication_tracker.database import get_db
-from Medication_tracker.schemas import UserCreate, UserResponse, TokenResponse
-from Medication_tracker.crud import create_user, authenticate_user, get_user_emal, get_user_username
+from database import get_db
+from schemas import UserCreate, UserResponse, TokenResponse
+from crud import create_user, authenticate_user, get_user_emal, get_user_username
 from fastapi import APIRouter, HTTPException, status, Depends
 from sqlalchemy.orm import Session
-from Medication_tracker.core.security import create_access_token
+from core.security import create_access_token
 from fastapi.security import OAuth2PasswordRequestForm
-from Medication_tracker.service.email import send_welcome_email
+from service.email import send_welcome_email
 router = APIRouter(prefix="/auth", tags=["AUTH"])
 
 @router.post("/register", response_model=UserResponse, description="Register")

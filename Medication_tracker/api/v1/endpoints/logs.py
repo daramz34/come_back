@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from Medication_tracker.database import get_db
-from Medication_tracker.models import User
-from Medication_tracker.schemas import ( 
+from database import get_db
+from models import User
+from schemas import ( 
     LogCreate, LogResponse
 )
-from Medication_tracker.crud import (
+from crud import (
     create_log, get_today_logs, get_medication_logs, get_medications_by_id
 )
 from sqlalchemy.orm import Session
-from Medication_tracker.enums import LogStatus
-from Medication_tracker.core.dependencies import get_current_user
+from enums import LogStatus
+from core.dependencies import get_current_user
 
 
 

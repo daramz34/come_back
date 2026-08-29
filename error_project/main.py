@@ -4,12 +4,12 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from sqlalchemy.orm import Session
 import jwt
-from error_project.security import SECRET_KEY, ALGORITHM
+from security import SECRET_KEY, ALGORITHM
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from error_project.database import Base, engine, get_db
-import error_project.crud as crud
-from error_project.security import verify_password, hash_password, create_access_token
-import error_project.schemas as schemas
+from database import Base, engine, get_db
+import crud as crud
+from security import verify_password, hash_password, create_access_token
+import schemas as schemas
 import time
 
 app = FastAPI()

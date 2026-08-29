@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from Medication_tracker.api.v1.endpoints import auth, logs, medications, streaks
+from api.v1.endpoints import auth, logs, medications, streaks
 
 
 api_router = APIRouter()

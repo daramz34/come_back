@@ -4,10 +4,10 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pathlib import Path
-from Medication_tracker.api.v1.router import api_router
-from Medication_tracker.database import Base, engine
-from Medication_tracker.service.scheduler import start_scheduler
-from Medication_tracker.core.config import settings
+from api.v1.router import api_router
+from database import Base, engine
+from service.scheduler import start_scheduler
+from core.config import settings
 
 Base.metadata.create_all(bind=engine)
 
@@ -79,5 +79,5 @@ def startup():
 
 @app.on_event("shutdown")
 def shutdown():
-    from Medication_tracker.service.scheduler import scheduler
+    from service.scheduler import scheduler
     scheduler.shutdown()
