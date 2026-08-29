@@ -71,26 +71,27 @@ const DMed = (() => {
     loginTab.addEventListener("click", () => { mode = "login"; render(); });
     registerTab.addEventListener("click", () => { mode = "register"; render(); });
     form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      const error = $("#auth-error");
-      error.textContent = "";
-      submit.disabled = true;
-      try {
-        const data = new FormData(form);
-        if (mode === "register") {
-          await DMedAPI.register({ username: data.get("username"), email: data.get("email"), password: data.get("password") });
-          await DMedAPI.login(data.get("username"), data.get("password"));
-        } else {
-          await DMedAPI.login(data.get("username"), data.get("password"));
-        }
-        const next = new URLSearchParams(window.location.search).get("next") || "/app";
-        window.location.href = next;
-      } catch (err) {
-        error.textContent = err.message;
-      } finally {
-        submit.disabled = false;
-      }
-    });
+  event.preventDefault();
+  const error = $("#auth-error");
+  error.textContent = "";
+  submit.disabled = true;
+  submit.textContent = mode === "register" ? "Creating account..." : "Signing in...";
+  try {
+    const data = new FormData(form);
+    if (mode === "register") {
+      await DMedAPI.register({ username: data.get("username"), email: data.get("email"), password: data.get("password") });
+      await DMedAPI.login(data.get("username"), data.get("password"));
+    } else {
+      await DMedAPI.login(data.get("username"), data.get("password"));
+    }
+    const next = new URLSearchParams(window.location.search).get("next") || "/app";
+    window.location.href = next;
+  } catch (err) {
+    error.textContent = err.message;
+    submit.disabled = false; // Only re-enable on error
+  }
+});
+
     render();
   }
 
@@ -181,7 +182,9 @@ const DMed = (() => {
       const query = ($("#med-search")?.value || "").toLowerCase();
       const visible = meds.filter((med) => med.name.toLowerCase().includes(query));
       list.innerHTML = visible.length ? visible.map((med) => `<article class="med-row">
-        ${medIcon(med.name)}<div class="med-copy"><strong>${escape(med.name)}</strong><small>${escape(med.dosage)} · ${escape(title(med.frequency))} · ${date(med.start_date)} – ${date(med.end_date)}</small></div>
+        ${medIcon(med.name)}<div class="med-copy"><strong>${escape(med.name)}</strong>
+        <small>${escape(med.dosage)} · ${escape(title(med.frequency))} · ${date(med.start_date)} – ${date(med.end_date)}</small>
+        <p class="med-desc">${escape(med.description || "No description")}</p></div>
         ${statusBadge(med.status)}<div class="med-row-actions"><div class="log-actions" aria-label="Log today's dose"><button class="button button-soft button-small js-log-status" data-id="${med.id}" data-status="taken">Taken</button><button class="button button-ghost button-small js-log-status" data-id="${med.id}" data-status="missed">Missed</button><button class="button button-ghost button-small js-log-status" data-id="${med.id}" data-status="skipped">Skipped</button></div><select class="status-select js-update-status" data-id="${med.id}" aria-label="Change medication status"><option value="active" ${med.status === "active" ? "selected" : ""}>Active</option><option value="completed" ${med.status === "completed" ? "selected" : ""}>Completed</option><option value="abandoned" ${med.status === "abandoned" ? "selected" : ""}>Abandoned</option></select><button class="icon-button js-edit" data-id="${med.id}" aria-label="Edit">✎</button><button class="icon-button js-delete" data-id="${med.id}" aria-label="Delete">×</button><a class="icon-button" href="/medications/${med.id}" aria-label="View details">↗</a></div>
       </article>`).join("") : `<div class="empty-state"><div class="empty-mark">✚</div><p>${query ? "No medications match your search." : "Your medication list is empty."}</p></div>`;
       $$(".js-edit", list).forEach((button) => button.addEventListener("click", async () => openMedicationModal(meds.find((med) => med.id === Number(button.dataset.id)))));

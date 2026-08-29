@@ -19,7 +19,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:8000"],
+    allow_origins=["http://localhost:3000", "http://localhost:8000",  "https://medication-tracker-production-19b8.up.railway.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -62,12 +62,10 @@ def dashboard_page():
 @app.get("/medications", include_in_schema=False)
 def medications_page():
     return frontend_page("medications.html")
-
-
+# ✅ use /med/ instead of /medications/
 @app.get("/medications/{med_id}", include_in_schema=False)
 def medication_detail_page(med_id: int):
     return frontend_page("medication-detail.html")
-
 
 @app.get("/settings", include_in_schema=False)
 def settings_page():

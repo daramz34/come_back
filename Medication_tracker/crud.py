@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 from models import User, Medication, MedicationLog, Streak
 from enums import LogStatus,MedicationStatus
 from schemas import (LogCreate,MedicatedUpdate, 
@@ -68,15 +69,25 @@ def update_medication(db: Session, med_id: int, update:MedicatedUpdate, current_
 
     return db_med
 
-def delete_medication(db:Session, med_id: int, current_user: User):
-    db_med = db.query(Medication).filter(Medication.id == med_id,
-                                             Medication.user_id == current_user.id).first()
-    if not db_med:
-        return None
-    db.delete(db_med)
-    db.commit()
-    return {"msg": "Medication deleted successfully"}
+# crud.py
 
+def delete_medication(db: Session, med_id: int, current_user: User):
+    medication = db.query(Medication).filter(
+        Medication.id == med_id, 
+        Medication.user_id == current_user.id
+    ).first()
+
+    if not medication:
+        raise HTTPException(status_code=404, detail="Medication not found")
+
+    # 1. Manually delete all logs tied to this medication first
+    db.query(MedicationLog).filter(MedicationLog.medication_id == med_id).delete()
+
+    # 2. Delete the medication record
+    db.delete(medication)
+    db.commit()
+
+    return {"message": "Medication deleted successfully"}
 def update_medication_status(db:Session, med_id: int, status: MedicationStatus, current_user: User):
     db_med = db.query(Medication).filter(Medication.id == med_id,
                                              Medication.user_id == current_user.id).first()
@@ -113,14 +124,13 @@ def create_log(db: Session, log: LogCreate, current_user: User):
     return db_log
 
 
-def get_today_logs(db:Session, current_user: User):
-    db_log = db.query(MedicationLog).filter(MedicationLog.user_id == current_user.id,
-                                            MedicationLog.date == date.today()).all()
-    if not db_log:
-        return None
-
-    return db_log
-
+def get_today_logs(db: Session, current_user: User):
+    db_log = db.query(MedicationLog).filter(
+        MedicationLog.user_id == current_user.id,
+        MedicationLog.date == date.today()
+    ).all()
+    
+    return db_log or [] 
 def get_medication_logs(db:Session, med_id: int, current_user: User):
     db_log  = db.query(MedicationLog).filter(MedicationLog.medication_id == med_id,
                                              MedicationLog.user_id == current_user.id).all()

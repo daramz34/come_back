@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from core.security import create_access_token
 from fastapi.security import OAuth2PasswordRequestForm
 from service.email import send_welcome_email
+from models import User
 router = APIRouter(prefix="/auth", tags=["AUTH"])
 
 @router.post("/register", response_model=UserResponse, description="Register")
@@ -20,10 +21,16 @@ def register(user: UserCreate, db:Session=Depends(get_db)):
         )
 
     db_user = create_user(db, user)
-    send_welcome_email(db_user.email, db_user.username)
+    
+    # Send welcome email with error handling
+    try:
+        send_welcome_email(db_user.email, db_user.username)
+        print(f"Welcome email sent to {db_user.email}")
+    except Exception as e:
+        print(f"Welcome email failed: {e}")
+        # Don't fail registration if email fails
 
     return db_user
-
 
 @router.post("/login", response_model=TokenResponse, description="User Login")
 def login(request: OAuth2PasswordRequestForm = Depends(), db:Session=Depends(get_db)):
@@ -40,3 +47,4 @@ def login(request: OAuth2PasswordRequestForm = Depends(), db:Session=Depends(get
         "access_token": token,
         "token_type": "bearer"
     }
+
